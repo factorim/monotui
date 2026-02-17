@@ -1,17 +1,28 @@
 {
   "name": "@factorim/monotui",
   "version": "0.1.0",
-  "author": "Factorim",
-  "description": "",
-  "type": "module",
-  "bin": {
-    "monotui": "./dist/index.js",
-    "monotui-init": "./dist/bin/init.js",
-    "monotui-trace-warnings": "./dist/bin/trace-warnings.js"
+  "description": "MonoTUI is a **Text User Interface (TUI)** dashboard for managing **Node monorepos**.",
+  "keywords": [],
+  "homepage": "https://github.com/factorim/monotui#readme",
+  "bugs": {
+    "url": "https://github.com/factorim/monotui/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/factorim/monotui.git"
+  },
+  "license": "ISC",
+  "author": "Factorim",
+  "type": "module",
   "exports": {
     "types": "./dist/index.d.ts",
     "default": "./dist/index.js"
+  },
+  "main": "index.js",
+  "bin": {
+    "monotui": "dist/index.js",
+    "monotui-init": "dist/bin/init.js",
+    "monotui-trace-warnings": "dist/bin/trace-warnings.js"
   },
   "scripts": {
     "prepare": "husky",
@@ -23,15 +34,6 @@
     "test:coverage": "jest --coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --write ."
-  },
-  "keywords": [],
-  "license": "ISC",
-  "packageManager": "pnpm@10.28.0",
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,json}": [
-      "biome check --write --no-errors-on-unmatched",
-      "bash -c 'pnpm biome check .'"
-    ]
   },
   "dependencies": {
     "@inkjs/ui": "^2.0.0",
@@ -56,5 +58,12 @@
     "lint-staged": "^16.2.7",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@10.28.0",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json}": [
+      "biome check --write --no-errors-on-unmatched",
+      "bash -c 'pnpm biome check .'"
+    ]
   }
 }

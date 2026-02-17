@@ -1,6 +1,6 @@
 # MonoTUI
 
-MonoTUI is a **Text User Interface (TUI)** dashboard for managing  **Node monorepos**.
+MonoTUI is a **Text User Interface (TUI)** dashboard for managing **Node monorepos**.
 
 Start, stop, and monitor all your apps, packages, and infrastructure from one interactive UI.
 

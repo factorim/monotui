@@ -1,9 +1,6 @@
-name: MonoTUI - Publish to NPM
+name: MonoTUI - Publish
 
 on:
-  push:
-    tags:
-      - "v*"
   release:
     types: [published]
   workflow_dispatch:
@@ -24,7 +21,6 @@ jobs:
         with:
           node-version: 20
           registry-url: "https://registry.npmjs.org"
-          always-auth: true
           cache: "pnpm"
 
       - name: Install dependencies
@@ -33,12 +29,5 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Verify npm auth
-        run: npm whoami
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Publish to npm
         run: pnpm publish --access public --provenance --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
