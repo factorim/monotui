@@ -1,0 +1,2 @@
+# Run linter on staged files only
+pnpm lint-staged
