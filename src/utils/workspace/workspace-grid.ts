@@ -132,20 +132,6 @@ export function getWorkspaceRuntimeCells(
   return result
 }
 
-// /**
-//  * Returns the WorkspaceCell at the given cursor position (row, col) from the grid.
-//  */
-// export function getWorkspaceCellByPosition(
-//   grid: WorkspacesNavigationGrid,
-//   row: number,
-//   col: number,
-// ): WorkspaceCell | null {
-//   const navRow = grid[row]
-//   if (!navRow || !navRow.cells[col]) return null
-//   const cell = navRow.cells[col]
-//   return cell && cell.type === "workspace" ? (cell as WorkspaceCell) : null
-// }
-
 /**
  * Returns the WorkspacesNavigationCell (any type) at the given row and col from the grid.
  */

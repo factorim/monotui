@@ -89,7 +89,6 @@ export function useWorkspaceRuntime(projects: Project[]) {
   )
 
   useEffect(() => {
-    console.log(".")
     let cancelled = false
     async function fetchStatus() {
       const results: WorkspaceRuntimeState[] = []
