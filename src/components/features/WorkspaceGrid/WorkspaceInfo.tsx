@@ -30,28 +30,26 @@ export function WorkspaceInfo() {
     >
       {selectedCell && selectedCell.type === "workspace" && (
         <Box flexDirection="column">
-          <Text {...styles.info()}>{selectedCell.workspace.path}</Text>
+          <Text {...styles.info()}>{selectedCell.project.path}</Text>
           <Box gap={2}>
-            {Array.isArray(
-              selectedCell.workspace.facets.makefile?.commands,
-            ) && (
+            {Array.isArray(selectedCell.project.facets.makefile?.commands) && (
               <Text {...styles.text()} dimColor>
                 makefile commands:
-                {selectedCell.workspace.facets.makefile.commands.length}
+                {selectedCell.project.facets.makefile.commands.length}
               </Text>
             )}
             {Array.isArray(
-              selectedCell.workspace.facets.packageJson?.scripts,
+              selectedCell.project.facets.packageJson?.scripts,
             ) && (
               <Text {...styles.text()} dimColor>
                 package.json scripts:
-                {selectedCell.workspace.facets.packageJson.scripts.length}
+                {selectedCell.project.facets.packageJson.scripts.length}
               </Text>
             )}
-            {Array.isArray(selectedCell.workspace.facets.compose?.services) && (
+            {Array.isArray(selectedCell.project.facets.compose?.services) && (
               <Text {...styles.text()} dimColor>
                 docker compose services:
-                {selectedCell.workspace.facets.compose.services.length}
+                {selectedCell.project.facets.compose.services.length}
               </Text>
             )}
           </Box>

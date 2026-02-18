@@ -12,8 +12,9 @@ export interface Workspace {
 }
 
 export interface Project {
-  path: string // e.g. "project-name/app"
-  absolutePath: string // e.g. "/home/user/project-name/"
+  name: string // e.g. "myapp"
+  path: string // e.g. "project-name/myapp"
+  absolutePath: string // e.g. "/home/user/project-name/myapp"
   type: ProjectType // e.g. "app"
   folder: string // e.g. "project-name"
   envFile?: EnvFile

@@ -81,7 +81,7 @@ export function WorkspacesNavigationProvider({
 
       if (selectedCell?.type === "workspace") {
         setPage(Page.Project)
-        setProject(selectedCell.workspace)
+        setProject(selectedCell.project)
       } else if (selectedCell?.type === "quickAction") {
         const workspace = projects[newRow]
         const command = selectedCell.action.command

@@ -25,12 +25,16 @@ export async function workspaceDiscovery(rootPath: string): Promise<Workspace> {
 
     const makefileFacet = await parseMakefile(dir)
 
+    // packageFacet?.name || composeFacet?.name || makefileFacet?.name || ""
+    const name = packageFacet?.name || basename(dir)
+
     if (packageFacet || composeFacet || makefileFacet) {
       const relPath = dir.startsWith(rootPath)
         ? dir.slice(rootPath.length).replace(/^\/+/, "")
         : dir
       const type = await determineProjectType(relPath)
       const project: Project = {
+        name,
         type,
         folder: basename(dir),
         path: relPath || ".",
@@ -46,9 +50,11 @@ export async function workspaceDiscovery(rootPath: string): Promise<Workspace> {
   }
 
   const orderedProjects = orderProjects(projects, config.discovery?.order || [])
+  const rootPackageName = projects.find((project) => project.path === ".")
+    ?.facets.packageJson?.name
 
   const workspace: Workspace = {
-    name: basename(rootPath),
+    name: rootPackageName || basename(rootPath),
     absolutePath: rootPath,
     projects: orderedProjects,
   }

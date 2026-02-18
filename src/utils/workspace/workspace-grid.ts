@@ -22,14 +22,14 @@ export function buildWorkspacesGrid(
 
   const grid: WorkspacesNavigationGrid = []
   for (let rowIndex = 0; rowIndex < workspaces.length; rowIndex++) {
-    const ws = workspaces[rowIndex]
+    const project = workspaces[rowIndex]
     const cells: (WorkspacesNavigationCell | null)[] = []
 
     // Workspace cell (col 0)
-    cells.push({ type: "workspace", workspace: ws, row: rowIndex, col: 0 })
+    cells.push({ type: "workspace", project, row: rowIndex, col: 0 })
 
     // Quick actions
-    const quickAction = getQuickActionByPath(quickActions, ws.path)
+    const quickAction = getQuickActionByPath(quickActions, project.path)
     const qaFacets = quickAction?.facets ?? []
     for (let i = 0; i < maxQuickActionFacets; i++) {
       if (qaFacets[i]) {
@@ -45,7 +45,7 @@ export function buildWorkspacesGrid(
     }
 
     // Runtimes
-    const runtime = getRuntimeByPath(runtimes, ws.path)
+    const runtime = getRuntimeByPath(runtimes, project.path)
     const rtFacets =
       runtime?.runStates?.filter((rs) => rs.status !== "stopped") ?? []
     for (let i = 0; i < maxRuntimeFacets; i++) {
@@ -62,7 +62,7 @@ export function buildWorkspacesGrid(
     }
 
     const navRow: WorkspacesNavigationRow = {
-      id: ws.path,
+      id: project.path,
       cells,
     }
     grid.push(navRow)

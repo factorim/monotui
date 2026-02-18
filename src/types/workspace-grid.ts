@@ -23,7 +23,7 @@ export interface WorkspaceCell {
   type: "workspace"
   row: number
   col: number
-  workspace: Project
+  project: Project
 }
 
 export interface WorkspaceQuickActionCell {
