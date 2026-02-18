@@ -16,10 +16,10 @@ export function initLogger(config: Config): Logger {
   const truncateOnStart = loggingConfig.truncateOnStart !== false
   const logDir = loggingConfig.logDir
     ? loggingConfig.logDir.replace(/^~/, homedir())
-    : join(homedir(), ".workspace-cli", "logs")
+    : join(homedir(), ".monotui", "logs")
 
   if (enableFile) {
-    const logFilePath = join(logDir, "workspace-cli.log")
+    const logFilePath = join(logDir, "monotui.log")
 
     // Truncate log file if configured
     if (truncateOnStart) {

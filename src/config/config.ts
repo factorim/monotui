@@ -7,7 +7,7 @@ let cachedConfig: Config | null = null
 
 export async function loadConfig(rootDir: string): Promise<Config> {
   try {
-    const configPath = join(rootDir, "workspace-cli.mjs")
+    const configPath = join(rootDir, "monotui.config.mjs")
     const configModule = await import(configPath)
     const userConfig = configModule.default as Config
 
