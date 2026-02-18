@@ -29,7 +29,7 @@ export function WorkspaceRow({
   const quickActionCells = getWorkspaceQuickActionCells(cells)
   const runtimeCells = getWorkspaceRuntimeCells(cells)
 
-  const packageJsonFacet = workspaceCell?.workspace.facets.packageJson
+  const packageJsonFacet = workspaceCell?.project.facets.packageJson
 
   return (
     <Box
@@ -40,12 +40,12 @@ export function WorkspaceRow({
       <Box width="3%">
         <Text {...styles.text()}>{rowNb + 1}</Text>
       </Box>
-      <Box width="17%">
+      <Box width="24%">
         <Text
           {...styles.action()}
           inverse={row === workspaceCell?.row && col === workspaceCell?.col}
         >
-          {workspaceCell?.workspace.folder}
+          {workspaceCell?.project.name}
         </Text>
         {packageJsonFacet?.framework && (
           <Text {...styles.text()} dimColor>
@@ -56,12 +56,12 @@ export function WorkspaceRow({
       </Box>
       <Box width="10%">
         <Text {...styles.text()} dimColor>
-          {workspaceCell?.workspace.type}
+          {workspaceCell?.project.type}
         </Text>
       </Box>
       <Box width="20%">
         <Text {...styles.text()} dimColor>
-          {workspaceCell?.workspace.path}
+          {workspaceCell?.project.path}
         </Text>
       </Box>
       <Box width="20%" gap={2}>
@@ -83,7 +83,7 @@ export function WorkspaceRow({
         ))}
       </Box>
 
-      <Box width="30%" gap={1}>
+      <Box width="23%" gap={1}>
         {runtimeCells.map((runtimeCell, index) => (
           <Box
             key={`rt-${runtimeCell.col}-${runtimeCell.row}`}

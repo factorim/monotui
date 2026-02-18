@@ -1,7 +1,7 @@
 import { execFile } from "node:child_process"
 import { promisify } from "node:util"
 
-import type { ComposeService } from "../../types/project"
+import type { ComposeService } from "../../types/workspace.js"
 import type { RunState, RuntimeStatus } from "../../types/workspace-runtime"
 import { logger } from "../../utils/logging/logger.js"
 import { isPortInUse } from "../../utils/runtime/port.js"

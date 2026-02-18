@@ -1,8 +1,8 @@
 import { execFile } from "node:child_process"
 import { promisify } from "node:util"
 
-import type { PackageJsonScript } from "../../types/project"
-import type { RunState } from "../../types/workspace-runtime"
+import type { PackageJsonScript } from "../../types/workspace.js"
+import type { RunState } from "../../types/workspace-runtime.js"
 
 const execFileAsync = promisify(execFile)
 

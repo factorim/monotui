@@ -23,7 +23,7 @@ export function WorkspaceGrid() {
         <Box width="3%">
           <Text {...styles.headerText()}>#</Text>
         </Box>
-        <Box width="17%">
+        <Box width="24%">
           <Text {...styles.headerText()}>Name</Text>
         </Box>
         <Box width="10%">
@@ -35,7 +35,7 @@ export function WorkspaceGrid() {
         <Box width="20%">
           <Text {...styles.headerText()}>Quick Actions</Text>
         </Box>
-        <Box width="30%">
+        <Box width="23%">
           <Text {...styles.headerText()}>State</Text>
         </Box>
       </Box>

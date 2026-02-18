@@ -1,4 +1,4 @@
-import type { Project } from "../../types/project.js"
+import type { Project } from "../../types/workspace.js"
 import type { WorkspaceQuickAction } from "../../types/workspace-quick-actions.js"
 import type { WorkspaceRuntimeState } from "../../types/workspace-runtime.js"
 

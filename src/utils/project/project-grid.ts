@@ -1,6 +1,4 @@
 import path from "node:path"
-
-import type { Project } from "../../types/project.js"
 import {
   COMPOSE_COMMANDS,
   type ComposeCommandCell,
@@ -10,6 +8,7 @@ import {
   type ProjectGridCell,
   type ProjectGridGrid,
 } from "../../types/project-grid.js"
+import type { Project } from "../../types/workspace.js"
 
 export function buildProjectGrid(workspace: Project): ProjectGridGrid {
   const makefileCells: MakefileCell[] = []

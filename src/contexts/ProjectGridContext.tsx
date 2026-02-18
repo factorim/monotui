@@ -8,8 +8,8 @@ import {
   shouldKeepTuiOpen,
 } from "../services/runtime/command-runner.js"
 import { Page } from "../types/page.js"
-import type { Project } from "../types/project.js"
 import type { ProjectGridGrid } from "../types/project-grid.js"
+import type { Project } from "../types/workspace.js"
 import {
   buildProjectGrid,
   getProjectCellByPosition,

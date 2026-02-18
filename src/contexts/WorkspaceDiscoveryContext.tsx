@@ -8,11 +8,11 @@ import {
 
 import { useWorkspaceDiscovery } from "../hooks/useWorkspaceDiscovery.js"
 import { useWorkspaceRuntime } from "../hooks/useWorkspaceRuntime.js"
-import type { Project } from "../types/project.js"
+import type { Project, Workspace } from "../types/workspace.js"
 import type { WorkspaceRuntimeState } from "../types/workspace-runtime.js"
 
 interface WorkspaceDiscoveryContextType {
-  projects: Project[]
+  workspace: Workspace | null
   workspaceRuntimes: WorkspaceRuntimeState[]
   project: Project | null
   setProject: (project: Project | null) => void
@@ -35,11 +35,11 @@ export function WorkspaceDiscoveryProvider({
 }) {
   const [project, setProject] = useState<Project | null>(null)
   const rootPath = useMemo(() => process.cwd(), [])
-  const { projects } = useWorkspaceDiscovery(rootPath)
-  const workspaceRuntimes = useWorkspaceRuntime(projects)
+  const { workspace } = useWorkspaceDiscovery(rootPath)
+  const workspaceRuntimes = useWorkspaceRuntime(workspace?.projects || [])
 
   return (
-    <Provider value={{ projects, workspaceRuntimes, project, setProject }}>
+    <Provider value={{ workspace, workspaceRuntimes, project, setProject }}>
       {children}
     </Provider>
   )

@@ -1,4 +1,4 @@
-import type { Project } from "./project.js"
+import type { Project } from "./workspace.js"
 import type { FacetQuickAction } from "./workspace-quick-actions.js"
 import type { RunState } from "./workspace-runtime.js"
 
@@ -23,7 +23,7 @@ export interface WorkspaceCell {
   type: "workspace"
   row: number
   col: number
-  workspace: Project
+  project: Project
 }
 
 export interface WorkspaceQuickActionCell {

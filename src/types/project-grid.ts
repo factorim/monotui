@@ -2,7 +2,7 @@ import type {
   ComposeService,
   MakefileCommand,
   PackageJsonScript,
-} from "./project.js"
+} from "./workspace.js"
 
 export type ProjectGridGrid = {
   packageJsonCells: PackageJsonCell[]

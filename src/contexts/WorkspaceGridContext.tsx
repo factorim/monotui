@@ -6,7 +6,7 @@ import {
   shouldKeepTuiOpen,
 } from "../services/runtime/command-runner.js"
 import { Page } from "../types/page.js"
-import type { Project } from "../types/project.js"
+import type { Project } from "../types/workspace.js"
 import type { CursorPosition } from "../types/workspace-grid.js"
 import type { WorkspaceQuickAction } from "../types/workspace-quick-actions.js"
 import type { WorkspaceRuntimeState } from "../types/workspace-runtime.js"
@@ -81,7 +81,7 @@ export function WorkspacesNavigationProvider({
 
       if (selectedCell?.type === "workspace") {
         setPage(Page.Project)
-        setProject(selectedCell.workspace)
+        setProject(selectedCell.project)
       } else if (selectedCell?.type === "quickAction") {
         const workspace = projects[newRow]
         const command = selectedCell.action.command

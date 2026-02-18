@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
-import { discoverWorkspaces } from "../services/discovery/workspace-discovery.js"
-import type { Project } from "../types/project.js"
+import { workspaceDiscovery } from "../services/discovery/workspace-discovery.js"
+import type { Workspace } from "../types/workspace.js"
 import { logger } from "../utils/logging/logger.js"
 
 interface UseWorkspaceDiscoveryOptions {
@@ -10,12 +10,15 @@ interface UseWorkspaceDiscoveryOptions {
 
 export function useWorkspaceDiscovery(
   rootPath: string,
-  options?: UseWorkspaceDiscoveryOptions,
-) {
+  _options?: UseWorkspaceDiscoveryOptions,
+): {
+  loading: boolean
+  workspace: Workspace | null
+  error: Error | null
+} {
   const [loading, setLoading] = useState(true)
-  const [projects, setProjects] = useState<Project[]>([])
+  const [workspace, setWorkspace] = useState<Workspace | null>(null)
   const [error, setError] = useState<Error | null>(null)
-  const refreshIntervalMs = options?.refreshIntervalMs ?? 0
 
   useEffect(() => {
     let cancelled = false
@@ -30,11 +33,13 @@ export function useWorkspaceDiscovery(
       setLoading(true)
       setError(null)
       try {
-        const result = await discoverWorkspaces(rootPath)
+        const workspace = await workspaceDiscovery(rootPath)
         logger.debug(rootPath, "discovered workspaces")
         if (!cancelled) {
-          setProjects(result)
-          logger.debug(`Workspace discovery result count: ${result.length}`)
+          setWorkspace(workspace)
+          logger.debug(
+            `Workspace discovery result count: ${workspace.projects.length}`,
+          )
         }
       } catch (err) {
         if (!cancelled) setError(err as Error)
@@ -46,16 +51,10 @@ export function useWorkspaceDiscovery(
 
     load()
 
-    const intervalId =
-      refreshIntervalMs > 0 ? setInterval(load, refreshIntervalMs) : null
-
     return () => {
       cancelled = true
-      if (intervalId) {
-        clearInterval(intervalId)
-      }
     }
-  }, [rootPath, refreshIntervalMs])
+  }, [rootPath])
 
-  return { loading, projects, error }
+  return { loading, workspace, error }
 }

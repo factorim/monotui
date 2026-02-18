@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises"
 import { dirname, join, relative, resolve } from "node:path"
 
-import type { MakefileFacet } from "../../../types/project.js"
+import type { MakefileFacet } from "../../../types/workspace.js"
 import { fileExists } from "../../../utils/fs/file.js"
 import { logger } from "../../../utils/logging/logger.js"
 
@@ -74,7 +74,7 @@ export async function parseMakefile(
 }
 
 import { getConfig } from "../../../config/config.js"
-import type { MakefileCommand } from "../../../types/project.js"
+import type { MakefileCommand } from "../../../types/workspace.js"
 
 async function parseSingleMakefile(
   makefilePath: string,

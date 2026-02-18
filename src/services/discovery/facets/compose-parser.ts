@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises"
 import { dirname, join, relative } from "node:path"
 import { parse as parseYaml } from "yaml"
 
-import type { ComposeFacet } from "../../../types/project.js"
+import type { ComposeFacet } from "../../../types/workspace.js"
 import { fileExists } from "../../../utils/fs/file.js"
 import { logger } from "../../../utils/logging/logger.js"
 

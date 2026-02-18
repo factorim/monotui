@@ -5,13 +5,11 @@ import { useContext, useEffect, useState } from "react"
 import { WorkspaceDiscoveryContext } from "../../../contexts/WorkspaceDiscoveryContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import { getPackageVersion } from "../../../utils/fs/package-json.js"
-import { getRootWorkspace } from "../../../utils/workspace/workspace-helper.js"
 import { ProjectCommands } from "./ProjectCommands.js"
 import { WorkspaceCommands } from "./WorkspaceCommands.js"
 
 export function Header() {
-  const { projects, project } = useContext(WorkspaceDiscoveryContext)
-  const rootWorkspace = getRootWorkspace(projects)
+  const { workspace, project } = useContext(WorkspaceDiscoveryContext)
   const [version, setVersion] = useState<string>("")
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
 
@@ -31,12 +29,7 @@ export function Header() {
       borderRight={false}
       {...styles.border()}
     >
-      <Text {...styles.title()}>
-        {rootWorkspace?.folder}
-        {project && project.folder !== rootWorkspace?.folder
-          ? ` - ${project.folder}`
-          : ""}
-      </Text>
+      <Text {...styles.title()}>{workspace?.name}</Text>
 
       <Box paddingX={1}>
         {project ? <ProjectCommands /> : <WorkspaceCommands />}
