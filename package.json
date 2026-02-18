@@ -1,6 +1,6 @@
 {
   "name": "@factorim/monotui",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "MonoTUI is a Text User Interface (TUI) dashboard for managing Node monorepos",
   "keywords": [],
   "homepage": "https://github.com/factorim/monotui#readme",
@@ -34,6 +34,7 @@
     "test:coverage": "jest --coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
+    "format": "pnpm lint:fix",
     "changeset": "changeset",
     "changeset:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
     "changeset:publish": "changeset publish"
@@ -55,6 +56,7 @@
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
     "@jest/globals": "^30.2.0",
+    "@svitejs/changesets-changelog-github-compact": "^1.2.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.2.3",
     "@types/react": "^19.2.14",
