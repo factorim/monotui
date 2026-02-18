@@ -6,7 +6,7 @@ import type {
   PackageJsonFacet,
   PackageJsonScript,
   PackageManager,
-} from "../../../types/project.js"
+} from "../../../types/workspace.js"
 import { getPackageJson } from "../../../utils/fs/file.js"
 import { detectFramework } from "../../../utils/workspace/framework-detector.js"
 

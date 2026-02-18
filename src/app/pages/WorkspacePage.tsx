@@ -10,14 +10,16 @@ import { useWorkspaceQuickActions } from "../../hooks/useWorkspaceQuickActions.j
 export function WorkspacePage() {
   const { setPage, workspacesGridPosition, setWorkspacesGridPosition } =
     useContext(PageNavigationContext)
-  const { projects, workspaceRuntimes, setProject } = useContext(
+  const { workspace, workspaceRuntimes, setProject } = useContext(
     WorkspaceDiscoveryContext,
   )
-  const workspaceQuickActions = useWorkspaceQuickActions(projects)
+  const workspaceQuickActions = useWorkspaceQuickActions(
+    workspace?.projects || [],
+  )
 
   return (
     <WorkspacesNavigationProvider
-      projects={projects}
+      projects={workspace?.projects || []}
       workspaceQuickActions={workspaceQuickActions}
       workspaceRuntimes={workspaceRuntimes}
       initialPosition={workspacesGridPosition}

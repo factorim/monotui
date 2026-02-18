@@ -10,8 +10,8 @@ import { ProjectCommands } from "./ProjectCommands.js"
 import { WorkspaceCommands } from "./WorkspaceCommands.js"
 
 export function Header() {
-  const { projects, project } = useContext(WorkspaceDiscoveryContext)
-  const rootWorkspace = getRootWorkspace(projects)
+  const { workspace, project } = useContext(WorkspaceDiscoveryContext)
+  const rootWorkspace = getRootWorkspace(workspace?.projects || [])
   const [version, setVersion] = useState<string>("")
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
 

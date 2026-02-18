@@ -1,22 +1,23 @@
 import { basename } from "node:path"
 
 import { getConfig } from "../../config/config.js"
-import type { Project, ProjectType } from "../../types/project"
+import type { Project, ProjectType, Workspace } from "../../types/workspace.js"
 import { scanDirectories } from "../../utils/fs/directories.js"
 import { logger } from "../../utils/logging/logger.js"
 import { parseDockerCompose } from "./facets/compose-parser.js"
 import { parseMakefile } from "./facets/makefile-parser.js"
 import { parsePackageJson } from "./facets/package-json-parser.js"
 
-export async function discoverWorkspaces(rootPath: string): Promise<Project[]> {
+export async function workspaceDiscovery(rootPath: string): Promise<Workspace> {
   const config = getConfig()
   const directories = await scanDirectories(rootPath, {
     maxDepth: 4,
     ignore: config.discovery?.ignore || [],
   })
+
   logger.debug(directories, "Scanned Directories")
 
-  const workspaces: Project[] = []
+  const projects: Project[] = []
   for (const dir of directories) {
     const packageFacet = await parsePackageJson(dir)
 
@@ -29,7 +30,7 @@ export async function discoverWorkspaces(rootPath: string): Promise<Project[]> {
         ? dir.slice(rootPath.length).replace(/^\/+/, "")
         : dir
       const type = await determineProjectType(relPath)
-      const workspace: Project = {
+      const project: Project = {
         type,
         folder: basename(dir),
         path: relPath || ".",
@@ -40,16 +41,19 @@ export async function discoverWorkspaces(rootPath: string): Promise<Project[]> {
           makefile: makefileFacet || undefined,
         },
       }
-      workspaces.push(workspace)
+      projects.push(project)
     }
   }
 
-  const orderedWorkspaces = orderWorkspaces(
-    workspaces,
-    config.discovery?.order || [],
-  )
+  const orderedProjects = orderProjects(projects, config.discovery?.order || [])
 
-  return orderedWorkspaces
+  const workspace: Workspace = {
+    name: basename(rootPath),
+    absolutePath: rootPath,
+    projects: orderedProjects,
+  }
+
+  return workspace
 }
 
 /**
@@ -91,7 +95,7 @@ async function determineProjectType(dir: string): Promise<ProjectType> {
   return "app"
 }
 
-export function orderWorkspaces(
+export function orderProjects(
   workspaces: Project[],
   order: string[],
 ): Project[] {

@@ -1,4 +1,4 @@
-import type { Project } from "./project.js"
+import type { Project } from "./workspace.js"
 import type { FacetQuickAction } from "./workspace-quick-actions.js"
 import type { RunState } from "./workspace-runtime.js"
 

@@ -1,8 +1,9 @@
 import { useComponentTheme } from "@inkjs/ui"
 import { Box, Text } from "ink"
+
 import type { GridTheme } from "../../../theme/theme.js"
-import type { Project } from "../../../types/project"
-import type { PackageJsonCell } from "../../../types/project-grid"
+import type { PackageJsonCell } from "../../../types/project-grid.js"
+import type { Project } from "../../../types/workspace.js"
 
 type ColPackageJsonProps = {
   project: Project

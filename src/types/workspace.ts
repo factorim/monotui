@@ -5,6 +5,12 @@ export interface EnvFile {
   filepath: string // e.g. "/home/user/project-name/.env"
 }
 
+export interface Workspace {
+  name: string // e.g. "my-monorepo"
+  absolutePath: string // e.g. "/home/user/my-monorepo"
+  projects: Project[]
+}
+
 export interface Project {
   path: string // e.g. "project-name/app"
   absolutePath: string // e.g. "/home/user/project-name/"
