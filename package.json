@@ -1,6 +1,6 @@
 {
   "name": "@factorim/monotui",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "MonoTUI is a Text User Interface (TUI) dashboard for managing Node monorepos",
   "keywords": [],
   "homepage": "https://github.com/factorim/monotui#readme",
