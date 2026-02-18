@@ -34,6 +34,7 @@
     "test:coverage": "jest --coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
+    "format": "pnpm lint:fix",
     "changeset": "changeset",
     "changeset:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
     "changeset:publish": "changeset publish"
