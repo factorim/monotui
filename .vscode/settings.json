@@ -23,6 +23,7 @@
     "source.fixAll.biome": "explicit"
   },
   "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
   "editor.tabSize": 2,
   "editor.indentSize": "tabSize",
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,

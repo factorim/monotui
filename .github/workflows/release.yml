@@ -1,77 +1,77 @@
 name: MonoTUI - Release
 
 on:
-	push:
-		branches: [main]
-	workflow_dispatch:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 concurrency:
-	group: ${{ github.workflow }}-${{ github.ref }}
-	cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-	verify:
-		name: Verify
-		runs-on: ubuntu-latest
-		permissions:
-			contents: read
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
-		steps:
-			- uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-			- uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
 
-			- uses: actions/setup-node@v4
-				with:
-					node-version: 20
-					cache: "pnpm"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
 
-			- name: Install dependencies
-				run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-			- name: Lint
-				run: pnpm biome check .
+      - name: Lint
+        run: pnpm biome check .
 
-			- name: Type check
-				run: pnpm tsc --noEmit
+      - name: Type check
+        run: pnpm tsc --noEmit
 
-			- name: Build
-				run: pnpm build
+      - name: Build
+        run: pnpm build
 
-			- name: Test
-				run: pnpm test
+      - name: Test
+        run: pnpm test
 
-	release:
-		name: Release to npm
-		needs: verify
-		runs-on: ubuntu-latest
-		permissions:
-			contents: write
-			pull-requests: write
-			id-token: write
+  release:
+    name: Release to npm
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
 
-		steps:
-			- uses: actions/checkout@v4
-				with:
-					fetch-depth: 0
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-			- uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
 
-			- uses: actions/setup-node@v4
-				with:
-					node-version: 20
-					registry-url: "https://registry.npmjs.org"
-					cache: "pnpm"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+          cache: "pnpm"
 
-			- name: Install dependencies
-				run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-			- name: Create release PR or publish
-				uses: changesets/action@v1
-				with:
-					commit: "chore: version package"
-					title: "chore: version package"
-					version: pnpm changeset:version
-					publish: pnpm changeset:publish
-				env:
-					GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create release PR or publish
+        uses: changesets/action@v1
+        with:
+          commit: "chore: version package"
+          title: "chore: version package"
+          version: pnpm changeset:version
+          publish: pnpm changeset:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
