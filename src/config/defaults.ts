@@ -1,11 +1,11 @@
 import type { Config } from "../types/config.js"
 
 /**
- * Default configuration for workspace-cli
+ * Default configuration for monotui.config.mjs
  * This is the single source of truth for default values
  * Used by:
  * - loadConfig() as fallback when no user config exists
- * - init command to generate config.json
+ * - init command to generate monotui.config.mjs
  */
 export const DEFAULT_CONFIG: Config = {
   discovery: {

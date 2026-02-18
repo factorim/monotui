@@ -4,7 +4,7 @@ import { join } from "node:path"
 import { DEFAULT_CONFIG } from "../config/defaults.js"
 import type { Config } from "../types/config.js"
 
-const CONFIG_FILENAME = "workspace-cli.mjs"
+const CONFIG_FILENAME = "monotui.config.mjs"
 
 /**
  * Convert object to JavaScript literal syntax (without quoted keys)
@@ -55,7 +55,30 @@ function generateConfigContent(config: Config): string {
 }
 
 /**
- * Initialize workspace-cli configuration
+ * Add or update the "monotui" script in package.json
+ */
+async function addMonotuiScriptToPackageJson(targetDir: string) {
+  const pkgPath = join(targetDir, "package.json")
+  try {
+    const pkgRaw = await import(pkgPath, { assert: { type: "json" } })
+    // Node ESM import returns { default: ... }
+    const pkg = pkgRaw.default || pkgRaw
+    if (!pkg.scripts) pkg.scripts = {}
+    if (pkg.scripts.monotui === "pnpm exec @factorim/monotui") {
+      return false
+    }
+    pkg.scripts.monotui = "pnpm exec @factorim/monotui"
+    // Write back to package.json
+    await writeFile(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`, "utf-8")
+    return true
+  } catch (_err) {
+    // package.json not found or error
+    return false
+  }
+}
+
+/**
+ * Initialize configuration
  */
 export async function initCommand(
   targetDir: string = process.cwd(),
@@ -73,8 +96,15 @@ export async function initCommand(
   const configContent = generateConfigContent(DEFAULT_CONFIG)
   await writeFile(configPath, configContent, "utf-8")
 
+  // Try to add monotui script to package.json
+  const scriptAdded = await addMonotuiScriptToPackageJson(targetDir)
   console.log(`✓ Created ${CONFIG_FILENAME}`)
+
+  if (scriptAdded) {
+    console.log("✓ Added 'monotui' script to package.json")
+  }
+
   console.log("\nNext steps:")
-  console.log("  1. Customize the configuration in workspace-cli.mjs")
-  console.log("  2. Run: workspace-cli")
+  console.log("  1. Customize the configuration in monotui.config.mjs")
+  console.log("  2. Run: monotui")
 }
