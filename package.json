@@ -1,11 +1,15 @@
 {
   "name": "@factorim/monotui",
   "version": "0.3.0",
-  "description": "MonoTUI is a Text User Interface (TUI) dashboard for managing Node monorepos",
+  "description": "Monorepo TUI for managing Node.js workspaces from the terminal",
   "keywords": [
+    "monorepo tui",
     "tui",
     "terminal-ui",
     "monorepo",
+    "workspace",
+    "cli",
+    "nodejs",
     "dashboard"
   ],
   "homepage": "https://github.com/factorim/monotui#readme",
