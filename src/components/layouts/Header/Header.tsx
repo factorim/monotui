@@ -34,10 +34,11 @@ export function Header() {
       <Box paddingX={1}>
         {project ? <ProjectCommands /> : <WorkspaceCommands />}
       </Box>
-      <Box paddingX={1}>
+      <Box gap={1}>
         <Text {...styles.title()} inverse>
-          {` MonoTUI v${version} `}
+          {` MonoTUI `}
         </Text>
+        <Text {...styles.text()} dimColor>{`v${version}`}</Text>
       </Box>
     </Box>
   )

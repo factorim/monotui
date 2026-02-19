@@ -46,7 +46,7 @@ export async function parsePackageJson(
     version: pkg.version,
     framework,
     packageManager,
-    description: pkg.description,
+    description: pkg?.description || "",
     scripts: scriptArray,
   }
 }
