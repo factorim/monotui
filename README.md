@@ -18,7 +18,7 @@ This project was developed using Ink/React for rapid prototyping.
 ## Install
 
 ```sh
-pnpm add @factorim/monotui
+pnpm add -D @factorim/monotui
 ```
 
 Generate a config file:
