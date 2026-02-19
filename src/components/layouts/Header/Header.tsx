@@ -29,7 +29,7 @@ export function Header() {
       borderRight={false}
       {...styles.border()}
     >
-      <Text {...styles.title()}>{workspace?.name}</Text>
+      <Text {...styles.monorepoTitle()}>{workspace?.name}</Text>
 
       <Box paddingX={1}>
         {project ? <ProjectCommands /> : <WorkspaceCommands />}

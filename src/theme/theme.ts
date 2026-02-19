@@ -12,6 +12,9 @@ const appLayoutTheme = {
 
 const gridTheme = {
   styles: {
+    monorepoTitle: (): TextProps => ({
+      color: "#FFA500",
+    }),
     title: (): TextProps => ({
       color: "cyan",
     }),
