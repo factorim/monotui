@@ -1,0 +1,38 @@
+services:
+  mongodb:
+    image: mongo:8.0.4
+    container_name: monorepo-mongodb
+    restart: always
+    ports:
+      - ${MONGODB_PORT}:27017
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - monorepo-network
+
+  mongo-express:
+    image: mongo-express
+    container_name: monorepo-mongo-express
+    restart: always
+    ports:
+      - ${MONGO_EXPRESS_PORT}:8081
+    env_file:
+      - .env
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_EXPRESS_ADMIN_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_EXPRESS_ADMIN_PASSWORD}
+    networks:
+      - monorepo-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  monorepo-network:
+    external: true

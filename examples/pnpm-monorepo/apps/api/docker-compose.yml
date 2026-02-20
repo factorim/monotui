@@ -1,0 +1,17 @@
+services:
+  web:
+    container_name: monorepo-web
+    build:
+      context: .
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - default
+
+networks:
+  default:
+    name: monorepo-network
+    external: true

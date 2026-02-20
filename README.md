@@ -27,7 +27,6 @@ Generate a config file:
 pnpm exec monotui-init
 ```
 
-
 ## Usage
 
 You can run MonoTUI directly:
@@ -49,6 +48,28 @@ Then run:
 ```sh
 pnpm tui
 ```
+
+## Example
+
+MonoTUI ships with a sample pnpm monorepo to help you explore the UI before integrating it into your own project.
+
+### Try the demo
+
+```sh
+# Clone the repository
+git clone https://github.com/factorim/monotui.git
+
+# Navigate to the example monorepo
+cd monotui/examples/pnpm-monorepo
+
+# Install dependencies
+pnpm install
+
+# Launch MonoTUI
+pnpm run monotui
+```
+
+The demo monorepo includes a representative set of apps, packages, and infrastructure services so you can try starting, stopping right away.
 
 ## Monorepo Structure
 
