@@ -1,8 +1,8 @@
-# MongoDB
+# Monorepo MongoDB
 
 MongoDB to store application data and logs.
 
-## Development
+## Quickstart
 
 ### Config
 
@@ -34,25 +34,3 @@ Connection string: `mongodb://root:example@localhost:27017`
 |----------|----------------|
 | username | root           |
 | password | example        |
-
-### Stop
-
-Stop MongoDB for development:
-
-```bash
-docker compose down
-```
-
-### Test
-
-With the default `.env` values, execute:
-
-```bash
-docker exec -it monorepo-mongodb mongosh \
-  --host localhost \
-  --port 27017 \
-  -u root \
-  -p example \
-  --authenticationDatabase admin \
-  --eval "db.adminCommand({listDatabases: 1})"
-```
