@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs"
 import { writeFile } from "node:fs/promises"
 import { join } from "node:path"
+import { readPackage } from "read-pkg"
 import { DEFAULT_CONFIG } from "../config/defaults.js"
 import type { Config } from "../types/config.js"
 
@@ -58,21 +59,23 @@ function generateConfigContent(config: Config): string {
  * Add or update the "monotui" script in package.json
  */
 async function addMonotuiScriptToPackageJson(targetDir: string) {
-  const pkgPath = join(targetDir, "package.json")
   try {
-    const pkgRaw = await import(pkgPath, { assert: { type: "json" } })
-    // Node ESM import returns { default: ... }
-    const pkg = pkgRaw.default || pkgRaw
+    const pkg = await readPackage({ cwd: targetDir, normalize: false })
     if (!pkg.scripts) pkg.scripts = {}
-    if (pkg.scripts.monotui === "pnpm exec @factorim/monotui") {
+
+    const desired = "monotui"
+    if (pkg.scripts.monotui === desired) {
       return false
     }
-    pkg.scripts.monotui = "pnpm exec @factorim/monotui"
+
+    pkg.scripts.monotui = desired
     // Write back to package.json
+    const pkgPath = join(targetDir, "package.json")
     await writeFile(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`, "utf-8")
     return true
-  } catch (_err) {
+  } catch (error) {
     // package.json not found or error
+    console.error("Could not read or update package.json.", error)
     return false
   }
 }
@@ -87,18 +90,18 @@ export async function initCommand(
 
   // Check if config already exists
   if (existsSync(configPath)) {
-    console.log(`⚠️  Config already exists at ${CONFIG_FILENAME}`)
-    console.log("   Delete it first if you want to reinitialize")
+    console.log(`Config already exists at ${CONFIG_FILENAME}`)
+    console.log("Delete it first if you want to reinitialize")
     return
   }
 
   // Create config file with ESM export
   const configContent = generateConfigContent(DEFAULT_CONFIG)
   await writeFile(configPath, configContent, "utf-8")
+  console.log(`✓ Created ${CONFIG_FILENAME}`)
 
   // Try to add monotui script to package.json
   const scriptAdded = await addMonotuiScriptToPackageJson(targetDir)
-  console.log(`✓ Created ${CONFIG_FILENAME}`)
 
   if (scriptAdded) {
     console.log("✓ Added 'monotui' script to package.json")

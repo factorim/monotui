@@ -39,14 +39,14 @@ Or add a script to your `package.json` for convenience:
 
 ```json
 "scripts": {
-  "tui": "monotui"
+  "monotui": "monotui"
 }
 ```
 
 Then run:
 
 ```sh
-pnpm tui
+pnpm monotui
 ```
 
 ## Example
