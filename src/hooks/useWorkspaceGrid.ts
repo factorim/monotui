@@ -48,19 +48,21 @@ export function useWorkspaceGrid({
     if (key.return && onSelect) {
       onSelect(position.row, position.col)
     }
-    // Handle 's' key to stop/kill
-    if (input === "s" && !key.ctrl && !key.meta && !key.shift) {
+    if (input === "s") {
       const cell = getWorkspaceCellByPosition(grid, position.row, position.col)
       stopWorkspaceCell(cell)
     }
+
     // Helper to stop a running workspace cell (script or service)
     function stopWorkspaceCell(cell: WorkspacesNavigationCell | null) {
       if (
         !cell ||
         cell.type !== "runtime" ||
-        cell.runState.status !== "running"
-      )
+        (cell.runState.status !== "running" &&
+          cell.runState.status !== "conflict")
+      ) {
         return
+      }
 
       // Optimistically reflect stopping state in the UI
       cell.runState.status = "stopping"

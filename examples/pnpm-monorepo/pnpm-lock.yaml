@@ -15,6 +15,31 @@ importers:
         specifier: ^0.3.3
         version: 0.3.3
 
+  apps/admin:
+    dependencies:
+      react:
+        specifier: ^19.2.4
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.4(react@19.2.4)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.2
+        version: 5.1.4(vite@7.3.1(@types/node@24.10.13)(tsx@4.21.0)(yaml@2.8.2))
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.0.0
+        version: 7.3.1(@types/node@24.10.13)(tsx@4.21.0)(yaml@2.8.2)
+
   apps/api:
     dependencies:
       express:
