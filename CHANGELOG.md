@@ -1,5 +1,11 @@
 # @factorim/monotui
 
+## 0.3.1
+
+### Patch Changes
+
+- Various fix on 0.3.0 ([#15](https://github.com/factorim/monotui/pull/15))
+
 ## 0.3.0
 
 ### Minor Changes
