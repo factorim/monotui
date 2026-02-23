@@ -59,7 +59,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
           cache: "pnpm"
 
@@ -75,3 +75,6 @@ jobs:
           publish: pnpm changeset:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # npm Trusted Publishing (OIDC) / provenance.
+          # Configure this package on npmjs.com under "Trusted Publishing" for GitHub Actions.
+          NPM_CONFIG_PROVENANCE: "true"
