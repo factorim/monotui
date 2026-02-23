@@ -11,14 +11,17 @@ import {
 } from "./project-grid.js"
 
 function createProject(overrides: Partial<Project> = {}): Project {
+  const { description, facets, ...rest } = overrides
+
   return {
     name: "api",
     type: "app",
     folder: "api",
     path: "apps/api",
     absolutePath: "/repo/apps/api",
-    facets: {},
-    ...overrides,
+    description: description ?? "",
+    facets: facets ?? {},
+    ...rest,
   }
 }
 

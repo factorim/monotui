@@ -1,9 +1,9 @@
 import { useComponentTheme } from "@inkjs/ui"
 import { Box, Text } from "ink"
 
-import type { GridTheme } from "../../../theme/theme.js"
-import type { PackageJsonCell } from "../../../types/project-grid.js"
-import type { Project } from "../../../types/workspace.js"
+import type { GridTheme } from "../../../../theme/theme.js"
+import type { PackageJsonCell } from "../../../../types/project-grid.js"
+import type { Project } from "../../../../types/workspace.js"
 
 type ColPackageJsonProps = {
   project: Project
@@ -13,7 +13,6 @@ type ColPackageJsonProps = {
 }
 
 export function ColPackageJson({
-  project,
   packageJsonCells,
   row,
   col,
@@ -22,23 +21,8 @@ export function ColPackageJson({
 
   return (
     <Box flexDirection="column" width="32%">
-      <Box
-        flexDirection="column"
-        width="100%"
-        borderStyle="single"
-        borderTop={false}
-        borderBottom={true}
-        borderLeft={false}
-        borderRight={false}
-        {...styles.border()}
-      >
+      <Box flexDirection="column" width="100%" marginBottom={1}>
         <Text {...styles.headerText()}>PACKAGE.JSON</Text>
-        <Box width="100%">
-          <Text>{project?.facets.packageJson?.name}</Text>
-          {project?.facets.packageJson?.version && (
-            <Text>{` v${project?.facets.packageJson?.version}`}</Text>
-          )}
-        </Box>
       </Box>
       {packageJsonCells.map((cell) => (
         <Box key={cell.script.command} width="100%">

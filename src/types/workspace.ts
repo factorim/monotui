@@ -17,6 +17,7 @@ export interface Project {
   absolutePath: string // e.g. "/home/user/project-name/myapp"
   type: ProjectType // e.g. "app"
   folder: string // e.g. "project-name"
+  description: string // e.g. "My awesome app"
   envFile?: EnvFile
   facets: {
     packageJson?: PackageJsonFacet

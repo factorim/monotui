@@ -33,12 +33,14 @@ export async function workspaceDiscovery(rootPath: string): Promise<Workspace> {
         ? dir.slice(rootPath.length).replace(/^\/+/, "")
         : dir
       const type = await determineProjectType(relPath)
+      const description = packageFacet?.description || ""
       const project: Project = {
         name,
         type,
         folder: basename(dir),
         path: relPath || ".",
         absolutePath: dir,
+        description,
         facets: {
           packageJson: packageFacet || undefined,
           compose: composeFacet || undefined,

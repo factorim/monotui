@@ -12,6 +12,30 @@ export async function scanDirectories(
 ): Promise<string[]> {
   const directories: string[] = []
 
+  const normalizeIgnore = (value: string) =>
+    value
+      .trim()
+      .replace(/\\/g, "/")
+      .replace(/^\.(\/|$)/, "")
+      .replace(/^\//, "")
+      .replace(/\/+$/, "")
+
+  const ignored = options.ignore.map(normalizeIgnore).filter(Boolean)
+
+  const shouldIgnoreDir = (fullPath: string, entryName: string) => {
+    if (ignored.length === 0) return false
+
+    // 1) Leaf-name ignore (backwards compatible)
+    if (ignored.includes(entryName)) return true
+
+    // 2) Root-relative path ignore (e.g. "apps/ignored")
+    const rel = normalizeIgnore(relative(rootDir, fullPath))
+    if (!rel) return false
+    return ignored.some(
+      (pattern) => rel === pattern || rel.startsWith(`${pattern}/`),
+    )
+  }
+
   async function scan(dir: string, depth: number) {
     if (depth > options.maxDepth) return
 
@@ -20,11 +44,13 @@ export async function scanDirectories(
 
       for (const entry of entries) {
         // Skip ignored directories
-        if (options.ignore.includes(entry.name)) continue
         if (entry.name.startsWith(".")) continue
 
         if (entry.isDirectory()) {
           const fullPath = join(dir, entry.name)
+
+          if (shouldIgnoreDir(fullPath, entry.name)) continue
+
           directories.push(fullPath)
           await scan(fullPath, depth + 1)
         }

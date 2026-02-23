@@ -6,10 +6,10 @@ import { ProjectGridContext } from "../../../contexts/ProjectGridContext.js"
 import { WorkspaceDiscoveryContext } from "../../../contexts/WorkspaceDiscoveryContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import type { RuntimeStatus } from "../../../types/workspace-runtime.js"
-import { ColCompose } from "./ColCompose.js"
-import { ColMakefile } from "./ColMakefile.js"
-import { ColPackageJson } from "./ColPackageJson.js"
-import { EmptyCol } from "./EmptyCol.js"
+import { ColCompose } from "./components/ColCompose.js"
+import { ColMakefile } from "./components/ColMakefile.js"
+import { ColPackageJson } from "./components/ColPackageJson.js"
+import { EmptyCol } from "./components/EmptyCol.js"
 
 export function ProjectGrid() {
   const { project, workspaceRuntimes } = useContext(WorkspaceDiscoveryContext)
@@ -38,16 +38,7 @@ export function ProjectGrid() {
     <Box flexDirection="column" width="100%">
       <Box width="100%" {...styles.border()}>
         <Box flexDirection="column" width="4%">
-          <Box
-            flexDirection="column"
-            width="100%"
-            borderStyle="single"
-            borderTop={false}
-            borderBottom={true}
-            borderLeft={false}
-            borderRight={false}
-            {...styles.border()}
-          >
+          <Box flexDirection="column" width="100%">
             <Box width="100%">
               <Text>&nbsp;</Text>
             </Box>

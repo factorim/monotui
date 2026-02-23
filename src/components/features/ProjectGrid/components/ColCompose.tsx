@@ -1,12 +1,12 @@
 import { useComponentTheme } from "@inkjs/ui"
 import { Box, Text } from "ink"
 
-import type { GridTheme } from "../../../theme/theme"
+import type { GridTheme } from "../../../../theme/theme.js"
 import type {
   ComposeCommandCell,
   ComposeServiceCell,
-} from "../../../types/project-grid"
-import type { RuntimeStatus } from "../../../types/workspace-runtime.js"
+} from "../../../../types/project-grid.js"
+import type { RuntimeStatus } from "../../../../types/workspace-runtime.js"
 
 type ColComposeProps = {
   composeCommandCells: ComposeCommandCell[]
@@ -27,20 +27,8 @@ export function ColCompose({
 
   return (
     <Box flexDirection="column" width="32%">
-      <Box
-        flexDirection="column"
-        width="100%"
-        borderStyle="single"
-        borderTop={false}
-        borderBottom={true}
-        borderLeft={false}
-        borderRight={false}
-        {...styles.border()}
-      >
+      <Box flexDirection="column" width="100%" marginBottom={1}>
         <Text {...styles.headerText()}>DOCKER COMPOSE</Text>
-        <Box width="100%">
-          <Text>&nbsp;</Text>
-        </Box>
       </Box>
 
       {composeCommandCells.map((cell) => (

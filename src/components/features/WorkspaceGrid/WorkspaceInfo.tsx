@@ -30,7 +30,12 @@ export function WorkspaceInfo() {
     >
       {selectedCell && selectedCell.type === "workspace" && (
         <Box flexDirection="column">
-          <Text {...styles.info()}>{selectedCell.project.path}</Text>
+          <Box gap={1}>
+            <Text {...styles.info()}>{selectedCell.project.path}</Text>
+            <Text {...styles.text()} dimColor>
+              {selectedCell.project.description}
+            </Text>
+          </Box>
           <Box gap={2}>
             {Array.isArray(selectedCell.project.facets.makefile?.commands) && (
               <Text {...styles.text()} dimColor>
