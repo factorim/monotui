@@ -21,25 +21,40 @@ export function Header() {
     <Box
       width="100%"
       paddingX={1}
-      justifyContent="space-between"
       borderStyle="single"
       borderTop={false}
       borderBottom={true}
       borderLeft={false}
       borderRight={false}
       {...styles.border()}
+      flexDirection="column"
     >
-      <Text {...styles.monorepoTitle()}>{workspace?.name}</Text>
+      <Box width="full" justifyContent="space-between">
+        <Text {...styles.monorepoTitle()}>{workspace?.name}</Text>
 
-      <Box paddingX={1}>
-        {project ? <ProjectCommands /> : <WorkspaceCommands />}
+        <Box paddingX={1}>
+          {project ? <ProjectCommands /> : <WorkspaceCommands />}
+        </Box>
+        <Box gap={1}>
+          <Text {...styles.title()} inverse>
+            {` MonoTUI `}
+          </Text>
+          <Text {...styles.text()} dimColor>{`v${version}`}</Text>
+        </Box>
       </Box>
-      <Box gap={1}>
-        <Text {...styles.title()} inverse>
-          {` MonoTUI `}
-        </Text>
-        <Text {...styles.text()} dimColor>{`v${version}`}</Text>
-      </Box>
+      {project && (
+        <Box>
+          <Text {...styles.text()}>
+            {project.name}
+            {project?.facets.packageJson?.version && (
+              <Text>{` v${project?.facets.packageJson?.version}`}</Text>
+            )}
+          </Text>
+          <Text {...styles.text()} dimColor>
+            {project.description && ` - ${project.description}`}
+          </Text>
+        </Box>
+      )}
     </Box>
   )
 }

@@ -4,6 +4,7 @@
     "noEmit": false,
     "rootDir": "./src",
     "outDir": "./dist",
+    "tsBuildInfoFile": "./dist/tsconfig.build.tsbuildinfo",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true
