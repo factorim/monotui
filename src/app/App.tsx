@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@inkjs/ui"
-import { render } from "ink"
+import { withFullScreen } from "fullscreen-ink"
 
 import { getConfig } from "../config/config.js"
 import { PageNavigationProvider } from "../contexts/PageNavigationContext.js"
@@ -22,4 +22,8 @@ export function App() {
   )
 }
 
-render(<App />)
+export async function startApp() {
+  const ink = withFullScreen(<App />)
+  await ink.start()
+  await ink.waitUntilExit()
+}

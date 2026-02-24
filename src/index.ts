@@ -7,4 +7,5 @@ const config = await loadConfig(process.cwd())
 initLogger(config)
 
 // Start the app (dynamic import so config is ready)
-await import("./app/App.js")
+const { startApp } = await import("./app/App.js")
+await startApp()
