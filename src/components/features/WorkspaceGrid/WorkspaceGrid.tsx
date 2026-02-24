@@ -1,7 +1,7 @@
 import { useComponentTheme } from "@inkjs/ui"
+import { useScreenSize } from "fullscreen-ink"
 import { Box, Text } from "ink"
 import { useContext } from "react"
-
 import { WorkspaceGridContext } from "../../../contexts/WorkspaceGridContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import { getQuickActionColumnMaxSizes } from "../../../utils/navigation/navigation-helper.js"
@@ -10,6 +10,7 @@ import { WorkspaceRow } from "./WorkspaceRow.js"
 
 export function WorkspaceGrid() {
   const { workspacesNavigationGrid } = useContext(WorkspaceGridContext)
+  const { width } = useScreenSize()
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
   const quickActionColSizes = getQuickActionColumnMaxSizes(
     workspacesNavigationGrid.map((row) =>
@@ -31,7 +32,7 @@ export function WorkspaceGrid() {
           <Text {...styles.headerText()}>#</Text>
         </Box> */}
         <Box width="24%">
-          <Text {...styles.headerText()}>Name</Text>
+          <Text {...styles.headerText()}>Name{width}</Text>
         </Box>
         <Box width="10%">
           <Text {...styles.headerText()}>Type</Text>
