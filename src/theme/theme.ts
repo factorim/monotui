@@ -2,16 +2,11 @@ import { type ComponentTheme, defaultTheme, extendTheme } from "@inkjs/ui"
 import type { BoxProps, TextProps } from "ink"
 import type { ThemeName } from "../types/config.js"
 
-const appLayoutTheme = {
+const gridTheme = {
   styles: {
     container: (): BoxProps => ({
       borderColor: "cyan",
     }),
-  },
-} satisfies ComponentTheme
-
-const gridTheme = {
-  styles: {
     monorepoTitle: (): TextProps => ({
       color: "#FFA500",
     }),
@@ -52,12 +47,10 @@ const gridTheme = {
   },
 } satisfies ComponentTheme
 
-export type AppLayoutTheme = typeof appLayoutTheme
 export type GridTheme = typeof gridTheme
 
 export const darkTheme = extendTheme(defaultTheme, {
   components: {
-    AppLayout: appLayoutTheme,
     GridTheme: gridTheme,
   },
 })

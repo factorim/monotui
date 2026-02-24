@@ -18,25 +18,18 @@ export function WorkspaceInfo() {
   )
 
   return (
-    <Box
-      flexDirection="column"
-      width="100%"
-      borderStyle="single"
-      borderTop={true}
-      borderBottom={false}
-      borderLeft={false}
-      borderRight={false}
-      {...styles.border()}
-    >
+    <Box flexDirection="column" width="100%" paddingBottom={1}>
       {selectedCell && selectedCell.type === "workspace" && (
         <Box flexDirection="column">
           <Box gap={1}>
-            <Text {...styles.info()}>{selectedCell.project.path}</Text>
+            <Text {...styles.info()} inverse>
+              {` ${selectedCell.project.path} `}
+            </Text>
             <Text {...styles.text()} dimColor>
               {selectedCell.project.description}
             </Text>
           </Box>
-          <Box gap={2}>
+          {/* <Box gap={2}>
             {Array.isArray(selectedCell.project.facets.makefile?.commands) && (
               <Text {...styles.text()} dimColor>
                 makefile commands:
@@ -57,34 +50,36 @@ export function WorkspaceInfo() {
                 {selectedCell.project.facets.compose.services.length}
               </Text>
             )}
-          </Box>
+          </Box> */}
         </Box>
       )}
       {selectedCell && selectedCell.type === "quickAction" && (
-        <Box flexDirection="column">
-          <Box>
-            <Text {...styles.info()}>{selectedCell.action.facetPath}</Text>
-          </Box>
+        <Box>
           <Box gap={1}>
-            <Text {...styles.action()}>{selectedCell.action.name}</Text>
-            <Text dimColor> → </Text>
-            <Text {...styles.text()} dimColor>
-              {selectedCell.action.command}
+            <Text {...styles.info()} inverse>
+              {` ${selectedCell.action.facetPath} `}
             </Text>
+            <Box>
+              <Text {...styles.action()} inverse>
+                {` ${selectedCell.action.command} `}
+              </Text>
+            </Box>
           </Box>
         </Box>
       )}
       {selectedCell && selectedCell.type === "runtime" && (
-        <Box flexDirection="column">
+        <Box>
           <Box gap={1}>
-            <Text {...styles.info()}>{selectedCell.runState.name}</Text>
+            <Text {...styles.action()} inverse>
+              {` ${selectedCell.runState.command} `}
+            </Text>
             {selectedCell.runState.statusMessage && (
               <Text {...styles.error()}>
                 {selectedCell.runState.statusMessage}
               </Text>
             )}
           </Box>
-          <Text {...styles.action()}>{selectedCell.runState.command}</Text>
+          {/* <Text {...styles.action()}>{selectedCell.runState.command}</Text> */}
         </Box>
       )}
     </Box>

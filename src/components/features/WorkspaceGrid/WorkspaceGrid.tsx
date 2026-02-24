@@ -18,11 +18,18 @@ export function WorkspaceGrid() {
   )
 
   return (
-    <Box flexDirection="column" width="100%" flexGrow={1}>
+    <Box
+      flexDirection="column"
+      width="100%"
+      flexGrow={1}
+      borderStyle="single"
+      {...styles.container()}
+      paddingX={1}
+    >
       <Box width="100%" borderColor="gray">
-        <Box width="3%">
+        {/* <Box width="3%">
           <Text {...styles.headerText()}>#</Text>
-        </Box>
+        </Box> */}
         <Box width="24%">
           <Text {...styles.headerText()}>Name</Text>
         </Box>

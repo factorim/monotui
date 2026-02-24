@@ -18,17 +18,7 @@ export function Header() {
   }, [])
 
   return (
-    <Box
-      width="100%"
-      paddingX={1}
-      borderStyle="single"
-      borderTop={false}
-      borderBottom={true}
-      borderLeft={false}
-      borderRight={false}
-      {...styles.border()}
-      flexDirection="column"
-    >
+    <Box width="100%" paddingX={1} flexDirection="column">
       <Box width="full" justifyContent="space-between">
         <Text {...styles.monorepoTitle()}>{workspace?.name}</Text>
 
@@ -42,7 +32,7 @@ export function Header() {
           <Text {...styles.text()} dimColor>{`v${version}`}</Text>
         </Box>
       </Box>
-      {project && (
+      {project ? (
         <Box>
           <Text {...styles.text()}>
             {project.name}
@@ -53,6 +43,10 @@ export function Header() {
           <Text {...styles.text()} dimColor>
             {project.description && ` - ${project.description}`}
           </Text>
+        </Box>
+      ) : (
+        <Box>
+          <Text>&nbsp;</Text>
         </Box>
       )}
     </Box>

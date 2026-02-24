@@ -37,9 +37,9 @@ export function WorkspaceRow({
       borderColor={"gray"}
       backgroundColor={row === rowNb ? "#0b1515" : undefined}
     >
-      <Box width="3%">
+      {/* <Box width="3%">
         <Text {...styles.text()}>{rowNb + 1}</Text>
-      </Box>
+      </Box> */}
       <Box width="24%">
         <Text
           {...styles.action()}

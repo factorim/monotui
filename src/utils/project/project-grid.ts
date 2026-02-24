@@ -5,12 +5,12 @@ import {
   type ComposeServiceCell,
   type MakefileCell,
   type PackageJsonCell,
+  type ProjectGrid,
   type ProjectGridCell,
-  type ProjectGridGrid,
 } from "../../types/project-grid.js"
 import type { Project } from "../../types/workspace.js"
 
-export function buildProjectGrid(workspace: Project): ProjectGridGrid {
+export function buildProjectGrid(workspace: Project): ProjectGrid {
   const makefileCells: MakefileCell[] = []
   const packageJsonCells: PackageJsonCell[] = []
   const composeCommandCells: ComposeCommandCell[] = []
@@ -111,7 +111,7 @@ export function buildProjectGrid(workspace: Project): ProjectGridGrid {
  * Returns the cell at the given position from the grid.
  */
 export function getProjectCellByPosition(
-  grid: ProjectGridGrid,
+  grid: ProjectGrid,
   row: number,
   col: number,
 ): ProjectGridCell | null {
@@ -128,7 +128,7 @@ export function getProjectCellByPosition(
 /**
  * Returns the maximum row count across all columns.
  */
-export function getMaxRows(grid: ProjectGridGrid): number {
+export function getMaxRows(grid: ProjectGrid): number {
   const col0Max = grid.makefileCells.length
   const col1Max = grid.packageJsonCells.length
   const col2Max =
@@ -140,7 +140,7 @@ export function getMaxRows(grid: ProjectGridGrid): number {
  * Returns all cells for a given column.
  */
 export function getCellsByColumn(
-  grid: ProjectGridGrid,
+  grid: ProjectGrid,
   col: number,
 ): ProjectGridCell[] {
   const allCells: ProjectGridCell[] = [
@@ -160,5 +160,5 @@ const CELL_TYPE_LABELS: Record<ProjectGridCell["type"], string> = {
 }
 
 export function getCellLabel(cell: ProjectGridCell): string {
-  return `${CELL_TYPE_LABELS[cell.type]} - ${cell.filepath}`
+  return ` ${CELL_TYPE_LABELS[cell.type]} `
 }

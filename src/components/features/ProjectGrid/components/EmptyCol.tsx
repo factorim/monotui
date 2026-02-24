@@ -8,16 +8,7 @@ export function EmptyCol() {
 
   return (
     <Box flexDirection="column" width="32%">
-      <Box
-        flexDirection="column"
-        width="100%"
-        borderStyle="single"
-        borderTop={false}
-        borderBottom={true}
-        borderLeft={false}
-        borderRight={false}
-        {...styles.border()}
-      >
+      <Box flexDirection="column" width="100%">
         <Text {...styles.text()}>&nbsp;</Text>
         <Box width="100%">
           <Text>&nbsp;</Text>

@@ -21,8 +21,11 @@ export function ColPackageJson({
 
   return (
     <Box flexDirection="column" width="32%">
-      <Box flexDirection="column" width="100%" marginBottom={1}>
+      <Box flexDirection="column" width="100%">
         <Text {...styles.headerText()}>PACKAGE.JSON</Text>
+        {/* <Text {...styles.info()} dimColor>
+          {packageJsonCells[0]?.filepath}
+        </Text> */}
       </Box>
       {packageJsonCells.map((cell) => (
         <Box key={cell.script.command} width="100%">

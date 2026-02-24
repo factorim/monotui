@@ -1,12 +1,12 @@
 import { exit } from "node:process"
 import { type Key, useInput } from "ink"
 import { useState } from "react"
-import type { ProjectGridGrid } from "../types/project-grid.js"
+import type { ProjectGrid } from "../types/project-grid.js"
 import type { CursorPosition } from "../types/workspace-grid.js"
 import { getCellsByColumn } from "../utils/project/project-grid.js"
 
 interface UseNavigationOptions {
-  grid: ProjectGridGrid
+  grid: ProjectGrid
   onSelect?: (row: number, col: number) => void
   onExit?: () => void
 }
