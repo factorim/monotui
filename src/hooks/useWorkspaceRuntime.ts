@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { useEffect, useMemo, useRef } from "react"
 
 import { getDockerRunStates } from "../services/runtime/docker-runtime.js"
 import { getNodeRunStates } from "../services/runtime/node-runtime.js"
@@ -6,6 +7,8 @@ import { resolveRuntimeConflicts } from "../services/runtime/resolve-runtime.js"
 import type { Project } from "../types/workspace.js"
 import type { WorkspaceRuntimeState } from "../types/workspace-runtime.js"
 import { logger } from "../utils/logging/logger.js"
+
+const RUNTIME_REFRESH_INTERVAL_MS = 2000
 
 function mergeTransientStatuses(
   previous: WorkspaceRuntimeState[],
@@ -84,13 +87,15 @@ function areRuntimeStatesEqual(
 }
 
 export function useWorkspaceRuntime(projects: Project[]) {
-  const [runtimeStates, setRuntimeStates] = useState<WorkspaceRuntimeState[]>(
-    [],
+  const previousRuntimeStatesRef = useRef<WorkspaceRuntimeState[]>([])
+  const queryKey = useMemo(
+    () => ["workspace-runtimes", projects.map((project) => project.path)],
+    [projects],
   )
 
-  useEffect(() => {
-    let cancelled = false
-    async function fetchStatus() {
+  const { data = [], refetch } = useQuery<WorkspaceRuntimeState[]>({
+    queryKey,
+    queryFn: async () => {
       const results: WorkspaceRuntimeState[] = []
       for (const project of projects) {
         const scripts = project.facets.packageJson?.scripts ?? []
@@ -112,21 +117,61 @@ export function useWorkspaceRuntime(projects: Project[]) {
           runStates: [...resolvedNodeStates, ...resolvedDockerStates],
         })
       }
-      if (cancelled) {
-        return
-      }
 
-      setRuntimeStates((previous) => {
-        const merged = mergeTransientStatuses(previous, results)
-        return areRuntimeStatesEqual(previous, merged) ? previous : merged
-      })
-    }
-    fetchStatus()
-    return () => {
-      cancelled = true
+      const merged = mergeTransientStatuses(
+        previousRuntimeStatesRef.current,
+        results,
+      )
+      const next = areRuntimeStatesEqual(
+        previousRuntimeStatesRef.current,
+        merged,
+      )
+        ? previousRuntimeStatesRef.current
+        : merged
+
+      previousRuntimeStatesRef.current = next
+      return next
+    },
+    enabled: projects.length > 0,
+    placeholderData: (previousData) => previousData,
+  })
+
+  useEffect(() => {
+    if (projects.length === 0) {
+      previousRuntimeStatesRef.current = []
     }
   }, [projects])
 
-  logger.debug(runtimeStates, "Runtime States")
-  return runtimeStates
+  useEffect(() => {
+    let cancelled = false
+    let timeoutId: NodeJS.Timeout | undefined
+
+    const schedule = () => {
+      timeoutId = setTimeout(async () => {
+        if (cancelled) {
+          return
+        }
+
+        await refetch()
+
+        if (!cancelled) {
+          schedule()
+        }
+      }, RUNTIME_REFRESH_INTERVAL_MS)
+    }
+
+    if (projects.length > 0) {
+      schedule()
+    }
+
+    return () => {
+      cancelled = true
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+    }
+  }, [projects.length, refetch])
+
+  logger.debug(data, "Runtime States")
+  return data
 }

@@ -25,8 +25,8 @@ export default {
   },
   quickActions: [],
   logging: {
-    level: "info",
-    file: false,
+    level: "debug",
+    file: true,
     logDir: "./logs",
     prettyPrint: true,
     truncateOnStart: true,
