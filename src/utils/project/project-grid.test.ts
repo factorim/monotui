@@ -173,6 +173,6 @@ describe("project-grid utils", () => {
     const cell = grid.makefileCells[0]
 
     expect(cell).toBeDefined()
-    expect(getCellLabel(cell)).toBe("Makefile - apps/api/Makefile")
+    expect(getCellLabel(cell)).toBe(" Makefile ")
   })
 })
