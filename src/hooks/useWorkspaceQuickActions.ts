@@ -19,6 +19,7 @@ export function useWorkspaceQuickActions(projects: Project[]) {
       const dev = makefile.commands.find((cmd) => cmd.name === "dev")
       if (dev)
         faccetQuickActions.push({
+          facetType: "makefile",
           facetPath: makefile.path,
           name: dev.name,
           command: dev.command,
@@ -28,6 +29,7 @@ export function useWorkspaceQuickActions(projects: Project[]) {
       const up = makefile.commands.find((cmd) => cmd.name === "up")
       if (up)
         faccetQuickActions.push({
+          facetType: "makefile",
           facetPath: makefile.path,
           name: up.name,
           command: up.command,
@@ -40,6 +42,7 @@ export function useWorkspaceQuickActions(projects: Project[]) {
       )
       if (upDetached)
         faccetQuickActions.push({
+          facetType: "makefile",
           facetPath: makefile.path,
           name: "up -d",
           command: upDetached.command,
@@ -52,6 +55,7 @@ export function useWorkspaceQuickActions(projects: Project[]) {
         const compose = project.facets.compose
         if (!hasMakefileUp)
           faccetQuickActions.push({
+            facetType: "compose",
             facetPath: compose.path,
             name: "up",
             command: "docker compose up",
@@ -60,6 +64,7 @@ export function useWorkspaceQuickActions(projects: Project[]) {
           })
         if (!hasMakefileUpDetached)
           faccetQuickActions.push({
+            facetType: "compose",
             facetPath: compose.path,
             name: "up -d",
             command: "docker compose up -d",
@@ -75,6 +80,7 @@ export function useWorkspaceQuickActions(projects: Project[]) {
       const dev = pkg.scripts.find((s) => s.name === "dev")
       if (dev)
         faccetQuickActions.push({
+          facetType: "packageJson",
           facetPath: pkg.path,
           name: dev.name,
           command: dev.command,
@@ -87,6 +93,7 @@ export function useWorkspaceQuickActions(projects: Project[]) {
     if (faccetQuickActions.length === 0 && project.facets.compose) {
       const compose = project.facets.compose
       faccetQuickActions.push({
+        facetType: "compose",
         facetPath: compose.path,
         name: "up",
         command: "docker compose up",
@@ -94,6 +101,7 @@ export function useWorkspaceQuickActions(projects: Project[]) {
         order: 1,
       })
       faccetQuickActions.push({
+        facetType: "compose",
         facetPath: compose.path,
         name: "up -d",
         command: "docker compose up -d",

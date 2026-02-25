@@ -47,7 +47,7 @@ export function WorkspaceCommands() {
         <Box gap={2}>
           <Box gap={1}>
             <Text {...styles.action()}>&lt;s&gt;</Text>
-            <Text {...styles.text()}>stop</Text>
+            <Text {...styles.text()}>Stop</Text>
           </Box>
           <Box gap={1}>
             <Text {...styles.action()}>&lt;esc&gt;</Text>

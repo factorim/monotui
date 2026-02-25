@@ -1,16 +1,13 @@
-import { useComponentTheme } from "@inkjs/ui"
 import { Box, Text } from "ink"
 import { useContext } from "react"
 
 import { PageNavigationContext } from "../contexts/PageNavigationContext.js"
-import type { AppLayoutTheme } from "../theme/theme.js"
 import { Page } from "../types/page.js"
 import { ProjectPage } from "./pages/ProjectPage.js"
 import { WorkspacePage } from "./pages/WorkspacePage.js"
 
 export function Layout() {
   const { currentPage } = useContext(PageNavigationContext)
-  const { styles } = useComponentTheme<AppLayoutTheme>("AppLayout")
 
   if (currentPage === Page.Exit) {
     return (
@@ -30,12 +27,7 @@ export function Layout() {
   }
 
   return (
-    <Box
-      flexDirection="column"
-      width="100%"
-      borderStyle="single"
-      {...styles.container()}
-    >
+    <Box flexDirection="column" width="100%">
       {renderPage()}
     </Box>
   )

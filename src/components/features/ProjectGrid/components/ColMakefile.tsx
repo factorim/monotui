@@ -1,7 +1,6 @@
 import { useComponentTheme } from "@inkjs/ui"
 import { Box, Text } from "ink"
-
-import type { GridTheme } from "../../../../theme/theme.js"
+import type { GridTheme } from "../../../../theme/theme"
 import type { MakefileCell } from "../../../../types/project-grid"
 
 type ColMakefileProps = {
@@ -15,8 +14,11 @@ export function ColMakefile({ makefileCells, row, col }: ColMakefileProps) {
 
   return (
     <Box flexDirection="column" width="32%">
-      <Box flexDirection="column" width="100%" marginBottom={1}>
+      <Box flexDirection="column" width="100%">
         <Text {...styles.headerText()}>MAKEFILE</Text>
+        {/* <Text {...styles.info()} dimColor>
+          {makefileCells[0]?.filepath}
+        </Text> */}
       </Box>
       {makefileCells.map((cell) => (
         <Box key={cell.command.command} width="100%">

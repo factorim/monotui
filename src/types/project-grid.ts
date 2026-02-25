@@ -4,7 +4,7 @@ import type {
   PackageJsonScript,
 } from "./workspace.js"
 
-export type ProjectGridGrid = {
+export type ProjectGrid = {
   packageJsonCells: PackageJsonCell[]
   composeCommandCells: ComposeCommandCell[]
   composeServiceCells: ComposeServiceCell[]

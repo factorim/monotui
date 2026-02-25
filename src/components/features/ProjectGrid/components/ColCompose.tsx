@@ -27,8 +27,11 @@ export function ColCompose({
 
   return (
     <Box flexDirection="column" width="32%">
-      <Box flexDirection="column" width="100%" marginBottom={1}>
+      <Box flexDirection="column" width="100%">
         <Text {...styles.headerText()}>DOCKER COMPOSE</Text>
+        {/* <Text {...styles.info()} dimColor>
+          {composeCommandCells[0]?.filepath}
+        </Text> */}
       </Box>
 
       {composeCommandCells.map((cell) => (
@@ -59,6 +62,7 @@ export function ColCompose({
               borderColor={
                 isSelected ? styles.action().color : styles.text().color
               }
+              paddingX={1}
             >
               <Text
                 {...(serviceStatus

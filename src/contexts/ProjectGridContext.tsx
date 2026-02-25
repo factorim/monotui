@@ -8,7 +8,7 @@ import {
   shouldKeepTuiOpen,
 } from "../services/runtime/command-runner.js"
 import { Page } from "../types/page.js"
-import type { ProjectGridGrid } from "../types/project-grid.js"
+import type { ProjectGrid } from "../types/project-grid.js"
 import type { Project } from "../types/workspace.js"
 import {
   buildProjectGrid,
@@ -17,7 +17,7 @@ import {
 
 interface ProjectGridContextType {
   project?: Project
-  workspaceNavigationGrid: ProjectGridGrid
+  projectGrid: ProjectGrid
   row: number
   col: number
 }
@@ -45,23 +45,16 @@ export function ProjectGridProvider({
   setPage,
   setProject,
 }: ProjectGridProviderProps) {
-  const workspaceNavigationGrid = useMemo(
-    () => buildProjectGrid(project),
-    [project],
-  )
+  const projectGrid = useMemo(() => buildProjectGrid(project), [project])
 
   const { position } = useProjectGrid({
-    grid: workspaceNavigationGrid,
+    grid: projectGrid,
     onExit: () => {
       setPage(Page.Workspace)
       setProject(null)
     },
     onSelect: (newRow, newCol) => {
-      const cell = getProjectCellByPosition(
-        workspaceNavigationGrid,
-        newRow,
-        newCol,
-      )
+      const cell = getProjectCellByPosition(projectGrid, newRow, newCol)
 
       if (cell) {
         const command = getCommandFromCell(cell)
@@ -81,7 +74,7 @@ export function ProjectGridProvider({
     <Provider
       value={{
         project,
-        workspaceNavigationGrid,
+        projectGrid,
         row: position.row,
         col: position.col,
       }}

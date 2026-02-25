@@ -13,7 +13,7 @@ import { EmptyCol } from "./components/EmptyCol.js"
 
 export function ProjectGrid() {
   const { project, workspaceRuntimes } = useContext(WorkspaceDiscoveryContext)
-  const { workspaceNavigationGrid, row, col } = useContext(ProjectGridContext)
+  const { projectGrid, row, col } = useContext(ProjectGridContext)
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
 
   const {
@@ -21,7 +21,7 @@ export function ProjectGrid() {
     packageJsonCells,
     composeCommandCells,
     composeServiceCells,
-  } = workspaceNavigationGrid
+  } = projectGrid
 
   const composeServiceStatuses: Record<string, RuntimeStatus> =
     workspaceRuntimes
@@ -35,13 +35,16 @@ export function ProjectGrid() {
       }, {}) ?? {}
 
   return (
-    <Box flexDirection="column" width="100%">
+    <Box
+      flexDirection="column"
+      width="100%"
+      flexGrow={1}
+      borderStyle="single"
+      {...styles.container()}
+    >
       <Box width="100%" {...styles.border()}>
-        <Box flexDirection="column" width="4%">
+        <Box flexDirection="column" width="3">
           <Box flexDirection="column" width="100%">
-            <Box width="100%">
-              <Text>&nbsp;</Text>
-            </Box>
             <Box width="100%">
               <Text>&nbsp;</Text>
             </Box>

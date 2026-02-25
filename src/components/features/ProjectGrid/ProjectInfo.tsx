@@ -4,56 +4,48 @@ import { useContext } from "react"
 
 import { ProjectGridContext } from "../../../contexts/ProjectGridContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
-import {
-  getCellLabel,
-  getProjectCellByPosition,
-} from "../../../utils/project/project-grid.js"
+import { getProjectCellByPosition } from "../../../utils/project/project-grid.js"
 
 export function ProjectInfo() {
-  const { workspaceNavigationGrid, row, col } = useContext(ProjectGridContext)
+  const { projectGrid, row, col } = useContext(ProjectGridContext)
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
 
-  const selectedCell = getProjectCellByPosition(
-    workspaceNavigationGrid,
-    row,
-    col,
-  )
+  const selectedCell = getProjectCellByPosition(projectGrid, row, col)
 
   return (
-    <Box
-      flexDirection="column"
-      width="100%"
-      borderStyle="single"
-      borderTop={true}
-      borderBottom={false}
-      borderLeft={false}
-      borderRight={false}
-      {...styles.border()}
-    >
+    <Box flexDirection="column" width="100%" paddingBottom={1}>
       {selectedCell && (
         <Box width="100%" flexDirection="column">
-          <Text {...styles.info()}>{getCellLabel(selectedCell)}</Text>
+          <Box gap={1}>
+            {/* <Text {...styles.info()} inverse>
+              {getCellLabel(selectedCell)}
+            </Text> */}
+            <Text {...styles.info()} inverse>
+              {` ${selectedCell.filepath} `}
+            </Text>
 
-          <Box>
             {selectedCell.type === "makefile" && (
-              <Box>
-                <Text {...styles.action()}>{selectedCell.command.name}</Text>
-                <Text dimColor> → </Text>
-                <Text>{selectedCell.command.exec}</Text>
+              <Box gap={1}>
+                <Text {...styles.action()} inverse>
+                  {` ${selectedCell.command.name} `}
+                </Text>
+                <Text {...styles.action()}>{selectedCell.command.exec}</Text>
               </Box>
             )}
             {selectedCell.type === "packageJson" && (
-              <Box>
-                <Text {...styles.action()}>{selectedCell.script.name}</Text>
-                <Text dimColor> → </Text>
-                <Text>{selectedCell.script.exec}</Text>
+              <Box gap={1}>
+                <Text {...styles.action()} inverse>
+                  {` ${selectedCell.script.name} `}
+                </Text>
+
+                <Text {...styles.action()}>{selectedCell.script.exec}</Text>
               </Box>
             )}
             {selectedCell.type === "composeCommand" && (
-              <Box>
-                <Text {...styles.action()}>{selectedCell.action.name}</Text>
-                <Text dimColor> → </Text>
-                <Text>{selectedCell.action.command}</Text>
+              <Box gap={1}>
+                <Text {...styles.action()} inverse>
+                  {` ${selectedCell.action.command} `}
+                </Text>
               </Box>
             )}
             {selectedCell.type === "composeService" && (
