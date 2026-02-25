@@ -1,5 +1,13 @@
 # @factorim/monotui
 
+## 0.3.2
+
+### Patch Changes
+
+- Get latest version ([#19](https://github.com/factorim/monotui/pull/19))
+
+- Change to fullscreen ([#19](https://github.com/factorim/monotui/pull/19))
+
 ## 0.3.1
 
 ### Patch Changes
