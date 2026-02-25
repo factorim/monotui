@@ -22,6 +22,9 @@ const gridTheme = {
     info: (): TextProps => ({
       color: "white",
     }),
+    notification: (): TextProps => ({
+      color: "yellow",
+    }),
     workspaceName: (): TextProps => ({
       color: "white",
     }),
