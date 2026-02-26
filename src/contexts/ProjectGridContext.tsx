@@ -1,4 +1,10 @@
-import { createContext, type JSX, type ReactNode, useMemo } from "react"
+import {
+  createContext,
+  type JSX,
+  type ReactNode,
+  useContext,
+  useMemo,
+} from "react"
 
 import { useProjectGrid } from "../hooks/useProjectGrid.js"
 import {
@@ -14,6 +20,7 @@ import {
   buildProjectGrid,
   getProjectCellByPosition,
 } from "../utils/project/project-grid.js"
+import { NotificationContext } from "./NotificationContext.js"
 
 interface ProjectGridContextType {
   project?: Project
@@ -46,6 +53,7 @@ export function ProjectGridProvider({
   setProject,
 }: ProjectGridProviderProps) {
   const projectGrid = useMemo(() => buildProjectGrid(project), [project])
+  const { notifyInfo } = useContext(NotificationContext)
 
   const { position } = useProjectGrid({
     grid: projectGrid,
@@ -60,6 +68,7 @@ export function ProjectGridProvider({
         const command = getCommandFromCell(cell)
         const exec = getExecFromCell(cell)
         if (command && exec) {
+          notifyInfo(`Running ${command} on ${project?.name}`)
           const keepTuiOpen = shouldKeepTuiOpen(exec)
           runCellCommand(command, project.path, { detached: keepTuiOpen })
           if (!keepTuiOpen) {

@@ -1,5 +1,6 @@
 import { type Key, useApp, useInput } from "ink"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { NotificationContext } from "../contexts/NotificationContext.js"
 import {
   stopComposeService,
   stopScriptProcess,
@@ -27,6 +28,8 @@ export function useWorkspaceGrid({
   const [position, setPosition] = useState<CursorPosition>(
     initialPosition ?? { row: 0, col: 0 },
   )
+
+  const { notifyInfo } = useContext(NotificationContext)
 
   useInput((input: string, key: Key) => {
     if (key.upArrow) {
@@ -64,6 +67,7 @@ export function useWorkspaceGrid({
         return
       }
 
+      notifyInfo(`Stopping ${cell?.runState?.name}`)
       // Optimistically reflect stopping state in the UI
       cell.runState.status = "stopping"
       setPosition((current) => ({ ...current }))

@@ -10,6 +10,7 @@ import {
   getWorkspaceQuickActionCells,
   getWorkspaceRuntimeCells,
 } from "../../../utils/workspace/workspace-grid.js"
+import { ResponsiveBox } from "../../ui/ResponsiveBox.js"
 
 interface WorkspaceRowProps {
   cells: (WorkspacesNavigationCell | null)[]
@@ -37,10 +38,7 @@ export function WorkspaceRow({
       borderColor={"gray"}
       backgroundColor={row === rowNb ? "#0b1515" : undefined}
     >
-      {/* <Box width="3%">
-        <Text {...styles.text()}>{rowNb + 1}</Text>
-      </Box> */}
-      <Box width="24%">
+      <ResponsiveBox width={{ s: "25%", m: "25%", l: "24%", xl: "24%" }}>
         <Text
           {...styles.action()}
           inverse={row === workspaceCell?.row && col === workspaceCell?.col}
@@ -53,18 +51,21 @@ export function WorkspaceRow({
             ({packageJsonFacet?.framework})
           </Text>
         )}
-      </Box>
-      <Box width="10%">
+      </ResponsiveBox>
+      <ResponsiveBox width={{ s: null, m: "15%", l: "14%", xl: "18%" }}>
         <Text {...styles.text()} dimColor>
           {workspaceCell?.project.type}
         </Text>
-      </Box>
-      <Box width="20%">
+      </ResponsiveBox>
+      <ResponsiveBox width={{ s: null, m: null, l: "24%", xl: "28%" }}>
         <Text {...styles.text()} dimColor>
           {workspaceCell?.project.path}
         </Text>
-      </Box>
-      <Box width="20%" gap={2}>
+      </ResponsiveBox>
+      <ResponsiveBox
+        width={{ s: "30%", m: "25%", l: "24%", xl: "28%" }}
+        gap={3}
+      >
         {quickActionCells.map((actionCell, index) => (
           <Box
             key={`qa-${actionCell.col}-${actionCell.row}`}
@@ -81,9 +82,12 @@ export function WorkspaceRow({
             </Box>
           </Box>
         ))}
-      </Box>
+      </ResponsiveBox>
 
-      <Box width="23%" gap={1}>
+      <ResponsiveBox
+        width={{ s: "45%", m: "35%", l: "23%", xl: "23%" }}
+        gap={3}
+      >
         {runtimeCells.map((runtimeCell, index) => (
           <Box
             key={`rt-${runtimeCell.col}-${runtimeCell.row}`}
@@ -109,7 +113,7 @@ export function WorkspaceRow({
             )}
           </Box>
         ))}
-      </Box>
+      </ResponsiveBox>
     </Box>
   )
 }

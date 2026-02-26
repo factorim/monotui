@@ -88,19 +88,19 @@ export async function getDockerRunStates(
     let status: RuntimeStatus = "stopped"
     let statusMessage: string | undefined
     const port = service.ports?.[0]
+    const serviceName = service.name.toLowerCase()
+    const containerName = service.containerName?.toLowerCase()
 
     // 1. Check if a running container matches the service name
     const nameMatch = runningContainers.find((c) =>
-      c.Names.toLowerCase().includes(service.name.toLowerCase()),
+      c.Names.toLowerCase().includes(serviceName),
     )
 
     if (nameMatch) {
       // If containerName is set, also verify it matches
       if (
         service.containerName &&
-        !nameMatch.Names.toLowerCase().includes(
-          service.containerName.toLowerCase(),
-        )
+        !nameMatch.Names.toLowerCase().includes(containerName ?? "")
       ) {
         // Service name matches but containerName doesn't → conflict
         status = "conflict"
@@ -125,15 +125,43 @@ export async function getDockerRunStates(
       }
     } else if (service.containerName) {
       // No match on service name — also try matching by containerName
-      const containerName = service.containerName
       const containerNameMatch = runningContainers.find((c) =>
-        c.Names.toLowerCase().includes(containerName.toLowerCase()),
+        c.Names.toLowerCase().includes(containerName ?? ""),
       )
 
       if (containerNameMatch) {
         // containerName matches but service name didn't → conflict
         status = "conflict"
         statusMessage = `Conflict with running container: ${containerNameMatch.Names}`
+      }
+    }
+
+    // 1.b No running match: check if container exists but is still starting/restarting
+    if (status === "stopped") {
+      const nonRunningMatch = allContainers.find((container) => {
+        const containerState = container.State.toLowerCase()
+        if (containerState === "running") {
+          return false
+        }
+
+        const names = container.Names.toLowerCase()
+        const matchesServiceName = names.includes(serviceName)
+        const matchesContainerName =
+          containerName != null && names.includes(containerName)
+
+        return matchesServiceName || matchesContainerName
+      })
+
+      if (nonRunningMatch) {
+        const containerState = nonRunningMatch.State.toLowerCase()
+        if (
+          containerState === "restarting" ||
+          containerState === "created" ||
+          containerState === "starting"
+        ) {
+          status = "starting"
+          statusMessage = nonRunningMatch.Status
+        }
       }
     }
 

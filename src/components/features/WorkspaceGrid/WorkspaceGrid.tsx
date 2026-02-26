@@ -1,16 +1,17 @@
 import { useComponentTheme } from "@inkjs/ui"
-import { useScreenSize } from "fullscreen-ink"
 import { Box, Text } from "ink"
 import { useContext } from "react"
+
 import { WorkspaceGridContext } from "../../../contexts/WorkspaceGridContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import { getQuickActionColumnMaxSizes } from "../../../utils/navigation/navigation-helper.js"
 import { getWorkspaceQuickActionCells } from "../../../utils/workspace/workspace-grid.js"
+import { Notification } from "../../ui/Notification.js"
+import { ResponsiveBox } from "../../ui/ResponsiveBox.js"
 import { WorkspaceRow } from "./WorkspaceRow.js"
 
 export function WorkspaceGrid() {
   const { workspacesNavigationGrid } = useContext(WorkspaceGridContext)
-  const { width } = useScreenSize()
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
   const quickActionColSizes = getQuickActionColumnMaxSizes(
     workspacesNavigationGrid.map((row) =>
@@ -27,34 +28,34 @@ export function WorkspaceGrid() {
       {...styles.container()}
       paddingX={1}
     >
-      <Box width="100%" borderColor="gray">
-        {/* <Box width="3%">
-          <Text {...styles.headerText()}>#</Text>
-        </Box> */}
-        <Box width="24%">
-          <Text {...styles.headerText()}>Name{width}</Text>
+      <Box flexDirection="column" flexGrow={1}>
+        <Box width="100%" borderColor="gray">
+          <ResponsiveBox width={{ s: "25%", m: "25%", l: "24%", xl: "24%" }}>
+            <Text {...styles.headerText()}>Name</Text>
+          </ResponsiveBox>
+          <ResponsiveBox width={{ s: null, m: "15%", l: "14%", xl: "18%" }}>
+            <Text {...styles.headerText()}>Type</Text>
+          </ResponsiveBox>
+          <ResponsiveBox width={{ s: null, m: null, l: "24%", xl: "28%" }}>
+            <Text {...styles.headerText()}>Path</Text>
+          </ResponsiveBox>
+          <ResponsiveBox width={{ s: "30%", m: "25%", l: "24%", xl: "28%" }}>
+            <Text {...styles.headerText()}>Quick Actions</Text>
+          </ResponsiveBox>
+          <ResponsiveBox width={{ s: "45%", m: "35%", l: "23%", xl: "23%" }}>
+            <Text {...styles.headerText()}>State</Text>
+          </ResponsiveBox>
         </Box>
-        <Box width="10%">
-          <Text {...styles.headerText()}>Type</Text>
-        </Box>
-        <Box width="20%">
-          <Text {...styles.headerText()}>Path</Text>
-        </Box>
-        <Box width="20%">
-          <Text {...styles.headerText()}>Quick Actions</Text>
-        </Box>
-        <Box width="23%">
-          <Text {...styles.headerText()}>State</Text>
-        </Box>
+        {workspacesNavigationGrid.map((row, rowNb) => (
+          <WorkspaceRow
+            key={row.id}
+            cells={row.cells}
+            rowNb={rowNb}
+            quickActionColSizes={quickActionColSizes}
+          />
+        ))}
       </Box>
-      {workspacesNavigationGrid.map((row, rowNb) => (
-        <WorkspaceRow
-          key={row.id}
-          cells={row.cells}
-          rowNb={rowNb}
-          quickActionColSizes={quickActionColSizes}
-        />
-      ))}
+      <Notification />
     </Box>
   )
 }

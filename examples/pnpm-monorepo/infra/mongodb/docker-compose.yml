@@ -19,11 +19,15 @@ services:
     image: mongo-express
     container_name: monorepo-mongo-express
     restart: always
+    depends_on:
+      - mongodb
     ports:
       - ${MONGO_EXPRESS_PORT}:8081
     env_file:
       - .env
     environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: ${MONGODB_PORT}
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_EXPRESS_ADMIN_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_EXPRESS_ADMIN_PASSWORD}
     networks:
