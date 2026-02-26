@@ -1,5 +1,17 @@
 # @factorim/monotui
 
+## 0.4.0
+
+### Minor Changes
+
+- Add notification ([#22](https://github.com/factorim/monotui/pull/22))
+
+- add Responsive Box in Workspace Grid ([#22](https://github.com/factorim/monotui/pull/22))
+
+### Patch Changes
+
+- add chokidar and useQuery to refresh ([#22](https://github.com/factorim/monotui/pull/22))
+
 ## 0.3.2
 
 ### Patch Changes
