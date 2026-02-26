@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { withFullScreen } from "fullscreen-ink"
 
 import { getConfig } from "../config/config.js"
+import { NotificationProvider } from "../contexts/NotificationContext.js"
 import { PageNavigationProvider } from "../contexts/PageNavigationContext.js"
 import { WorkspaceDiscoveryProvider } from "../contexts/WorkspaceDiscoveryContext.js"
 import { getAppTheme } from "../theme/theme.js"
@@ -17,11 +18,13 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <WorkspaceDiscoveryProvider>
-          <PageNavigationProvider>
-            <Layout />
-          </PageNavigationProvider>
-        </WorkspaceDiscoveryProvider>
+        <NotificationProvider>
+          <WorkspaceDiscoveryProvider>
+            <PageNavigationProvider>
+              <Layout />
+            </PageNavigationProvider>
+          </WorkspaceDiscoveryProvider>
+        </NotificationProvider>
       </ThemeProvider>
     </QueryClientProvider>
   )

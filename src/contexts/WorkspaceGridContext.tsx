@@ -1,5 +1,10 @@
-import { createContext, type JSX, type ReactNode, useMemo } from "react"
-
+import {
+  createContext,
+  type JSX,
+  type ReactNode,
+  useContext,
+  useMemo,
+} from "react"
 import { useWorkspaceGrid } from "../hooks/useWorkspaceGrid.js"
 import {
   runCellCommand,
@@ -15,6 +20,7 @@ import {
   buildWorkspacesGrid,
   getWorkspaceCellByPosition,
 } from "../utils/workspace/workspace-grid.js"
+import { NotificationContext } from "./NotificationContext.js"
 
 interface WorkspaceGridContextType {
   projects?: Project[]
@@ -56,6 +62,8 @@ export function WorkspacesNavigationProvider({
   setProject,
   onPositionChange,
 }: WorkspacesNavigationProviderProps) {
+  const { notifyInfo } = useContext(NotificationContext)
+
   const workspacesNavigationGrid = useMemo(
     () =>
       buildWorkspacesGrid(
@@ -85,6 +93,9 @@ export function WorkspacesNavigationProvider({
       } else if (selectedCell?.type === "quickAction") {
         const workspace = projects[newRow]
         const command = selectedCell.action.command
+        notifyInfo(
+          `Running ${selectedCell.action.command} on ${workspace.name}`,
+        )
         const keepTuiOpen = shouldKeepTuiOpen(selectedCell.action.exec)
         runCellCommand(command, workspace.path, { detached: keepTuiOpen })
         if (!keepTuiOpen) {
