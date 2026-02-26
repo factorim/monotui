@@ -1,7 +1,7 @@
 services:
   redis:
-    container_name:  monorepo-redis
     image: redis:alpine
+    container_name:  monorepo-redis
     hostname: redis
     ports:
       - '${PORT}:6379'
