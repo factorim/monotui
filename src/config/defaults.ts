@@ -30,7 +30,7 @@ export const DEFAULT_CONFIG: Config = {
     },
   },
   execution: {
-    useTmux: true,
+    runner: "classic",
   },
   quickActions: [],
   logging: {
