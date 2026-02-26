@@ -6,6 +6,7 @@ import { ProjectGridContext } from "../../../contexts/ProjectGridContext.js"
 import { WorkspaceDiscoveryContext } from "../../../contexts/WorkspaceDiscoveryContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import type { RuntimeStatus } from "../../../types/workspace-runtime.js"
+import { Notification } from "../../ui/Notification.js"
 import { ColCompose } from "./components/ColCompose.js"
 import { ColMakefile } from "./components/ColMakefile.js"
 import { ColPackageJson } from "./components/ColPackageJson.js"
@@ -42,16 +43,9 @@ export function ProjectGrid() {
       borderStyle="single"
       {...styles.container()}
     >
-      <Box width="100%" {...styles.border()}>
-        <Box flexDirection="column" width="3">
-          <Box flexDirection="column" width="100%">
-            <Box width="100%">
-              <Text>&nbsp;</Text>
-            </Box>
-          </Box>
-          <Box width="100%">
-            <Text {...styles.action()}>{" < "}</Text>
-          </Box>
+      <Box width="100%" flexGrow={1}>
+        <Box width="3" paddingTop={1}>
+          <Text {...styles.action()}>{" < "}</Text>
         </Box>
 
         {makefileCells.length > 0 && (
@@ -83,6 +77,7 @@ export function ProjectGrid() {
 
         {composeServiceCells.length === 0 && <EmptyCol />}
       </Box>
+      <Notification />
     </Box>
   )
 }
