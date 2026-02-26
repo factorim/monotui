@@ -4,17 +4,9 @@ Redis is used for caching.
 
 ## Quickstart
 
-### Config
-
-Copy the config:
-
-```bash
-cp .env.example .env
-```
-
 ### Start
 
-Start MongoDB for development:
+Start Redis for development:
 
 ```bash
 docker compose up
@@ -26,11 +18,6 @@ Start in detached mode:
 docker compose up -d
 ```
 
-By default MongoDB is connected on port `27017`
+By default Redis is connected on port `6379`
 
-Connection string: `mongodb://root:example@localhost:27017`
-
-| access   | defaults value |
-|----------|----------------|
-| username | root           |
-| password | example        |
+Connection string: `redis://:example@localhost:6379`
