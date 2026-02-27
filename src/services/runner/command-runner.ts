@@ -1,7 +1,5 @@
-import { spawn } from "node:child_process"
-
-import type { ProjectGridCell } from "../../types/project-grid"
-
+import type { ProjectGridCell } from "../../types/project-grid.js"
+import { runZellijCommand } from "./zellij.js"
 /**
  * Extracts the shell command string from a navigation cell.
  */
@@ -36,35 +34,23 @@ export function getExecFromCell(cell: ProjectGridCell): string | null {
 export function runCellCommand(
   command: string,
   cwd: string,
+  runner: "classic" | "tmux" | "zellij" = "classic",
   options?: { detached?: boolean },
 ): void {
   if (!command) {
     return
   }
-
-  const detached = options?.detached ?? false
-
-  if (detached) {
-    const child = spawn(command, {
-      cwd,
-      shell: true,
-      detached: true,
-      stdio: "ignore",
-    })
-    child.unref()
-    return
+  runZellijCommand(command, cwd, options)
+  switch (runner) {
+    case "zellij":
+      // runZellijCommand(command, cwd, options)
+      return
+    case "tmux":
+      // runTmuxCommand(command, cwd, options)
+      return
+    default:
+    // runClassicCommand(command, cwd, options)
   }
-
-  // Restore terminal to cooked mode so the TTY driver handles Ctrl+C → SIGINT
-  if (process.stdin.isTTY) {
-    process.stdin.setRawMode(false)
-  }
-
-  spawn(command, {
-    cwd,
-    stdio: "inherit",
-    shell: true,
-  })
 }
 
 /**

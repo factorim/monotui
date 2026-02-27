@@ -5,11 +5,12 @@ import {
   useContext,
   useMemo,
 } from "react"
+import { getConfig } from "../config/config.js"
 import { useWorkspaceGrid } from "../hooks/useWorkspaceGrid.js"
 import {
   runCellCommand,
   shouldKeepTuiOpen,
-} from "../services/runtime/command-runner.js"
+} from "../services/runner/command-runner.js"
 import { Page } from "../types/page.js"
 import type { Project } from "../types/workspace.js"
 import type { CursorPosition } from "../types/workspace-grid.js"
@@ -62,6 +63,7 @@ export function WorkspacesNavigationProvider({
   setProject,
   onPositionChange,
 }: WorkspacesNavigationProviderProps) {
+  const config = getConfig()
   const { notifyInfo } = useContext(NotificationContext)
 
   const workspacesNavigationGrid = useMemo(
@@ -97,8 +99,10 @@ export function WorkspacesNavigationProvider({
           `Running ${selectedCell.action.command} on ${workspace.name}`,
         )
         const keepTuiOpen = shouldKeepTuiOpen(selectedCell.action.exec)
-        runCellCommand(command, workspace.path, { detached: keepTuiOpen })
-        if (!keepTuiOpen) {
+        runCellCommand(command, workspace.path, config.execution?.runner, {
+          detached: keepTuiOpen,
+        })
+        if (!keepTuiOpen && config.execution?.runner === "classic") {
           setPage(Page.Exit)
         }
       } else {

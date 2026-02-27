@@ -5,14 +5,14 @@ import {
   useContext,
   useMemo,
 } from "react"
-
+import { getConfig } from "../config/config.js"
 import { useProjectGrid } from "../hooks/useProjectGrid.js"
 import {
   getCommandFromCell,
   getExecFromCell,
   runCellCommand,
   shouldKeepTuiOpen,
-} from "../services/runtime/command-runner.js"
+} from "../services/runner/command-runner.js"
 import { Page } from "../types/page.js"
 import type { ProjectGrid } from "../types/project-grid.js"
 import type { Project } from "../types/workspace.js"
@@ -52,6 +52,7 @@ export function ProjectGridProvider({
   setPage,
   setProject,
 }: ProjectGridProviderProps) {
+  const config = getConfig()
   const projectGrid = useMemo(() => buildProjectGrid(project), [project])
   const { notifyInfo } = useContext(NotificationContext)
 
@@ -70,8 +71,11 @@ export function ProjectGridProvider({
         if (command && exec) {
           notifyInfo(`Running ${command} on ${project?.name}`)
           const keepTuiOpen = shouldKeepTuiOpen(exec)
-          runCellCommand(command, project.path, { detached: keepTuiOpen })
-          if (!keepTuiOpen) {
+          runCellCommand(command, project.path, config.execution?.runner, {
+            detached: keepTuiOpen,
+          })
+
+          if (!keepTuiOpen && config.execution?.runner === "classic") {
             setPage(Page.Exit)
           }
         }
