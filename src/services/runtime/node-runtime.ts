@@ -64,14 +64,44 @@ function extractCoreCommand(command: string): string {
   return parts[0] || withoutPkgManager
 }
 
+function buildCommandNeedles(command: string): string[] {
+  const trimmed = command.trim()
+  const needles = new Set<string>()
+
+  if (trimmed) needles.add(trimmed)
+
+  const coreCommand = extractCoreCommand(trimmed)
+  if (coreCommand) needles.add(coreCommand)
+
+  const runMatch = trimmed.match(
+    /^(npm|yarn|pnpm|bun)\s+(?:--?\S+\s+)*run\s+([^\s]+)/,
+  )
+  if (runMatch) {
+    const pm = runMatch[1]
+    const scriptName = runMatch[2]
+
+    needles.add(`${pm} run ${scriptName}`)
+    needles.add(scriptName)
+  }
+
+  const pnpmDirectMatch = trimmed.match(
+    /^pnpm\s+(?:--?\S+\s+)*(dev|start|serve|preview)\b/,
+  )
+  if (pnpmDirectMatch) {
+    needles.add(`pnpm ${pnpmDirectMatch[1]}`)
+    needles.add(pnpmDirectMatch[1])
+  }
+
+  return Array.from(needles)
+}
+
 async function getPidsMatchingCommandInWorkspace(params: {
   command: string
   absolutePath: string
 }): Promise<number[]> {
   const out = await getPsOutput()
 
-  // Extract core command for more flexible matching
-  const coreCommand = extractCoreCommand(params.command)
+  const commandNeedles = buildCommandNeedles(params.command)
   const wsNeedle = params.absolutePath.trim()
   const pids: number[] = []
 
@@ -89,9 +119,10 @@ async function getPidsMatchingCommandInWorkspace(params: {
     const pid = Number(pidStr)
     if (!Number.isFinite(pid)) continue
 
-    // Check if command matches the core command
-    // This allows "next dev --turbo" to match "next dev --turbopack -p 3001"
-    if (!rest.includes(coreCommand)) continue
+    const matchesCommand = commandNeedles.some((needle) =>
+      rest.includes(needle),
+    )
+    if (!matchesCommand) continue
 
     // Check if the command line includes the workspace path OR
     // check if the process cwd is within the workspace

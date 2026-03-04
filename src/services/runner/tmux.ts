@@ -1,7 +1,4 @@
-import { spawn } from "node:child_process"
-import { writeFileSync } from "node:fs"
-import { tmpdir } from "node:os"
-import { join } from "node:path"
+import { execFileSync } from "node:child_process"
 
 import { logger } from "../../utils/logging/logger.js"
 import { runShellCommand } from "./shell.js"
@@ -17,35 +14,27 @@ export function runTmuxCommand(
     return
   }
 
-  const shell = process.env.SHELL || "sh"
+  try {
+    const paneId = execFileSync(
+      "tmux",
+      ["split-window", "-v", "-l", "25%", "-c", cwd, "-P", "-F", "#{pane_id}"],
+      { encoding: "utf8" },
+    ).trim()
 
-  // Write command to a temp script so quoting and env vars are not an issue.
-  // After the command exits (or is killed), exec into a live shell so the pane stays open.
-  const scriptPath = join(tmpdir(), `monotui-${Date.now()}.sh`)
-  writeFileSync(
-    scriptPath,
-    `#!/bin/sh\ntrap '' INT\n${command}\nexec ${shell}\n`,
-    {
-      mode: 0o755,
-    },
-  )
+    if (!paneId) {
+      throw new Error("Failed to create tmux pane")
+    }
 
-  spawn(
-    "tmux",
-    [
-      "split-window",
-      "-v",
-      "-l",
-      "25%",
-      "-c",
-      cwd,
-      shell,
-      "-c",
-      `${scriptPath}; exec ${shell}`,
-    ],
-    {
-      detached: true,
+    execFileSync("tmux", ["send-keys", "-t", paneId, "-l", command], {
       stdio: "ignore",
-    },
-  ).unref()
+    })
+    execFileSync("tmux", ["send-keys", "-t", paneId, "Enter"], {
+      stdio: "ignore",
+    })
+  } catch (error) {
+    logger.error(
+      `Failed to run command in tmux pane: ${error instanceof Error ? error.message : String(error)}`,
+    )
+    runShellCommand(command, cwd, options)
+  }
 }
