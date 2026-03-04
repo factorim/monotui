@@ -53,7 +53,7 @@ export function runTmuxCommand(
       "split-window",
       "-v",
       "-l",
-      "25%",
+      "50%",
       "-c",
       cwd,
       "-t",
