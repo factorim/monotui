@@ -102,7 +102,7 @@ export function WorkspacesNavigationProvider({
         runCellCommand(command, workspace.path, config.execution?.runner, {
           detached: keepTuiOpen,
         })
-        if (!keepTuiOpen && config.execution?.runner === "classic") {
+        if (!keepTuiOpen && config.execution?.runner === "shell") {
           setPage(Page.Exit)
         }
       } else {

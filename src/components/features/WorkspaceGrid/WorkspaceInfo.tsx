@@ -5,6 +5,7 @@ import { useContext } from "react"
 import { WorkspaceGridContext } from "../../../contexts/WorkspaceGridContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import { getWorkspaceCellByPosition } from "../../../utils/workspace/workspace-grid.js"
+import { Runner } from "../../ui/Runner.js"
 
 export function WorkspaceInfo() {
   const { workspacesNavigationGrid, row, col } =
@@ -19,11 +20,11 @@ export function WorkspaceInfo() {
 
   return (
     <Box
-      flexDirection="column"
       width="100%"
       paddingBottom={1}
       paddingLeft={1}
       paddingRight={1}
+      justifyContent="space-between"
     >
       {selectedCell && selectedCell.type === "workspace" && (
         <Box gap={1}>
@@ -36,20 +37,14 @@ export function WorkspaceInfo() {
         </Box>
       )}
       {selectedCell && selectedCell.type === "quickAction" && (
-        <Box justifyContent="space-between">
-          <Box gap={1}>
-            <Text {...styles.info()} inverse>
-              {` ${selectedCell.action.facetPath} `}
+        <Box gap={1}>
+          <Text {...styles.info()} inverse>
+            {` ${selectedCell.action.facetPath} `}
+          </Text>
+          <Box>
+            <Text {...styles.action()} inverse>
+              {` ${selectedCell.action.command} `}
             </Text>
-            <Box>
-              <Text {...styles.action()} inverse>
-                {` ${selectedCell.action.command} `}
-              </Text>
-            </Box>
-          </Box>
-          <Box gap={1}>
-            <Text color={"white"}>Runner: Tmux</Text>
-            <Text color={"white"}>Mode: fg</Text>
           </Box>
         </Box>
       )}
@@ -65,6 +60,10 @@ export function WorkspaceInfo() {
           )}
         </Box>
       )}
+
+      <Box>
+        <Runner />
+      </Box>
     </Box>
   )
 }

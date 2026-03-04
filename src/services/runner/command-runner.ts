@@ -1,4 +1,6 @@
 import type { ProjectGridCell } from "../../types/project-grid.js"
+import { runShellCommand } from "./shell.js"
+import { runTmuxCommand } from "./tmux.js"
 import { runZellijCommand } from "./zellij.js"
 /**
  * Extracts the shell command string from a navigation cell.
@@ -34,22 +36,22 @@ export function getExecFromCell(cell: ProjectGridCell): string | null {
 export function runCellCommand(
   command: string,
   cwd: string,
-  runner: "classic" | "tmux" | "zellij" = "classic",
+  runner: "shell" | "tmux" | "zellij" = "shell",
   options?: { detached?: boolean },
 ): void {
   if (!command) {
     return
   }
-  runZellijCommand(command, cwd, options)
+
   switch (runner) {
     case "zellij":
-      // runZellijCommand(command, cwd, options)
+      runZellijCommand(command, cwd, options)
       return
     case "tmux":
-      // runTmuxCommand(command, cwd, options)
+      runTmuxCommand(command, cwd, options)
       return
     default:
-    // runClassicCommand(command, cwd, options)
+      runShellCommand(command, cwd, options)
   }
 }
 

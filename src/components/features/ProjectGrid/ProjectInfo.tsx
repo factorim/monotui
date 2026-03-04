@@ -5,6 +5,7 @@ import { useContext } from "react"
 import { ProjectGridContext } from "../../../contexts/ProjectGridContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import { getProjectCellByPosition } from "../../../utils/project/project-grid.js"
+import { Runner } from "../../ui/Runner.js"
 
 export function ProjectInfo() {
   const { projectGrid, row, col } = useContext(ProjectGridContext)
@@ -13,13 +14,15 @@ export function ProjectInfo() {
   const selectedCell = getProjectCellByPosition(projectGrid, row, col)
 
   return (
-    <Box flexDirection="column" width="100%" paddingBottom={1}>
-      {selectedCell && (
+    <Box
+      width="100%"
+      paddingLeft={1}
+      paddingRight={1}
+      justifyContent="space-between"
+    >
+      {selectedCell ? (
         <Box width="100%" flexDirection="column">
           <Box gap={1}>
-            {/* <Text {...styles.info()} inverse>
-              {getCellLabel(selectedCell)}
-            </Text> */}
             <Text {...styles.info()} inverse>
               {` ${selectedCell.filepath} `}
             </Text>
@@ -29,7 +32,9 @@ export function ProjectInfo() {
                 <Text {...styles.action()} inverse>
                   {` ${selectedCell.command.name} `}
                 </Text>
-                <Text {...styles.action()}>{selectedCell.command.exec}</Text>
+                <Text {...styles.action()} wrap="truncate">
+                  {selectedCell.command.exec}
+                </Text>
               </Box>
             )}
             {selectedCell.type === "packageJson" && (
@@ -53,7 +58,12 @@ export function ProjectInfo() {
             )}
           </Box>
         </Box>
+      ) : (
+        <Box></Box>
       )}
+      <Box>
+        <Runner />
+      </Box>
     </Box>
   )
 }

@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import { logger } from "../../utils/logging/logger.js"
-import { runClassicCommand } from "./classic.js"
+import { runShellCommand } from "./shell.js"
 
 export function runTmuxCommand(
   command: string,
@@ -12,8 +12,8 @@ export function runTmuxCommand(
   options?: { detached?: boolean },
 ): void {
   if (!process.env.TMUX) {
-    logger.warn("Not in a tmux session, falling back to classic runner")
-    runClassicCommand(command, cwd, options)
+    logger.warn("Not in a tmux session, falling back to shell runner")
+    runShellCommand(command, cwd, options)
     return
   }
 

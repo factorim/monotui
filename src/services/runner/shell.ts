@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process"
 
-export function runClassicCommand(
+export function runShellCommand(
   command: string,
   cwd: string,
   options?: { detached?: boolean },

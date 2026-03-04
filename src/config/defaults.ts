@@ -30,7 +30,7 @@ export const DEFAULT_CONFIG: Config = {
     },
   },
   execution: {
-    runner: "classic",
+    runner: "shell",
   },
   quickActions: [],
   logging: {

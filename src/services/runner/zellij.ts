@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import { logger } from "../../utils/logging/logger.js"
-import { runClassicCommand } from "./classic.js"
+import { runShellCommand } from "./shell.js"
 
 export function runZellijCommand(
   command: string,
@@ -12,8 +12,8 @@ export function runZellijCommand(
   options?: { detached?: boolean },
 ): void {
   if (!process.env.ZELLIJ) {
-    logger.warn("Not in a zellij session, falling back to classic runner")
-    runClassicCommand(command, cwd, options)
+    logger.warn("Not in a zellij session, falling back to shell runner")
+    runShellCommand(command, cwd, options)
     return
   }
 
@@ -49,7 +49,7 @@ export function runZellijCommand(
   child.unref()
 
   child.on("error", (error) => {
-    logger.error(error, "Failed to open zellij pane, falling back to classic")
-    runClassicCommand(command, cwd, options)
+    logger.error(error, "Failed to open zellij pane, falling back to shell")
+    runShellCommand(command, cwd, options)
   })
 }

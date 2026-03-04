@@ -58,7 +58,7 @@ const discoverySchema = z
 
 const executionSchema = z
   .object({
-    runner: z.enum(["classic", "tmux", "zellij"]),
+    runner: z.enum(["shell", "tmux", "zellij"]),
   })
   .optional()
 

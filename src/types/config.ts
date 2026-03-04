@@ -38,7 +38,7 @@ export interface MakefileConfig {
 }
 
 export interface ExecutionConfig {
-  runner: "classic" | "tmux" | "zellij"
+  runner: "shell" | "tmux" | "zellij"
 }
 
 export interface LoggingConfig {
