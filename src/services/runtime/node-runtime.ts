@@ -95,13 +95,64 @@ function buildCommandNeedles(command: string): string[] {
   return Array.from(needles)
 }
 
+function buildExecNeedles(execCommand: string): string[] {
+  const trimmed = execCommand.trim()
+  if (!trimmed) return []
+
+  const needles = new Set<string>()
+  needles.add(trimmed)
+
+  const tokens = trimmed
+    .split(/\s+/)
+    .filter(Boolean)
+    .filter((token) => !/^[A-Za-z_][A-Za-z0-9_]*=.*/.test(token))
+
+  if (tokens.length === 1) {
+    needles.add(tokens[0])
+  }
+
+  if (
+    tokens.length >= 2 &&
+    (tokens[1] === "dev" ||
+      tokens[1] === "start" ||
+      tokens[1] === "serve" ||
+      tokens[1] === "preview" ||
+      tokens[1] === "build")
+  ) {
+    needles.add(`${tokens[0]} ${tokens[1]}`)
+  }
+
+  return Array.from(needles)
+}
+
+function isWorkspaceRelatedPath(
+  processCwd: string,
+  workspacePath: string,
+): boolean {
+  const normalize = (value: string) => value.replace(/\/+$/, "")
+
+  const processCwdNormalized = normalize(processCwd)
+  const workspacePathNormalized = normalize(workspacePath)
+
+  return (
+    processCwdNormalized === workspacePathNormalized ||
+    processCwdNormalized.startsWith(`${workspacePathNormalized}/`) ||
+    workspacePathNormalized.startsWith(`${processCwdNormalized}/`)
+  )
+}
+
 async function getPidsMatchingCommandInWorkspace(params: {
   command: string
+  exec: string
+  scriptName: string
   absolutePath: string
 }): Promise<number[]> {
   const out = await getPsOutput()
 
-  const commandNeedles = buildCommandNeedles(params.command)
+  const commandNeedles = new Set<string>([
+    ...buildCommandNeedles(params.command),
+    ...buildExecNeedles(params.exec),
+  ])
   const wsNeedle = params.absolutePath.trim()
   const pids: number[] = []
 
@@ -119,8 +170,8 @@ async function getPidsMatchingCommandInWorkspace(params: {
     const pid = Number(pidStr)
     if (!Number.isFinite(pid)) continue
 
-    const matchesCommand = commandNeedles.some((needle) =>
-      rest.includes(needle),
+    const matchesCommand = Array.from(commandNeedles).some(
+      (needle) => needle && rest.includes(needle),
     )
     if (!matchesCommand) continue
 
@@ -131,7 +182,7 @@ async function getPidsMatchingCommandInWorkspace(params: {
     } else {
       // Fallback: check the process working directory
       const cwd = await getPidCwd(pid)
-      if (cwd?.startsWith(wsNeedle)) {
+      if (cwd && isWorkspaceRelatedPath(cwd, wsNeedle)) {
         pids.push(pid)
       }
     }
@@ -225,6 +276,8 @@ export async function getNodeRunStates(
 
     const pids = await getPidsMatchingCommandInWorkspace({
       command,
+      exec: script.exec,
+      scriptName: name,
       absolutePath,
     })
 
