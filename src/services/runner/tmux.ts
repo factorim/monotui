@@ -14,7 +14,17 @@ export function runTmuxCommand(
     return
   }
 
+  let originalPaneId: string | null = null
+
   try {
+    originalPaneId = execFileSync(
+      "tmux",
+      ["display-message", "-p", "#{pane_id}"],
+      {
+        encoding: "utf8",
+      },
+    ).trim()
+
     const paneId = execFileSync(
       "tmux",
       ["split-window", "-v", "-l", "25%", "-c", cwd, "-P", "-F", "#{pane_id}"],
@@ -31,10 +41,27 @@ export function runTmuxCommand(
     execFileSync("tmux", ["send-keys", "-t", paneId, "Enter"], {
       stdio: "ignore",
     })
+
+    if (originalPaneId) {
+      execFileSync("tmux", ["select-pane", "-t", originalPaneId], {
+        stdio: "ignore",
+      })
+    }
   } catch (error) {
     logger.error(
       `Failed to run command in tmux pane: ${error instanceof Error ? error.message : String(error)}`,
     )
+
+    if (originalPaneId) {
+      try {
+        execFileSync("tmux", ["select-pane", "-t", originalPaneId], {
+          stdio: "ignore",
+        })
+      } catch {
+        // ignore focus restore failures
+      }
+    }
+
     runShellCommand(command, cwd, options)
   }
 }
