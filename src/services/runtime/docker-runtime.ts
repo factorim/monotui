@@ -87,6 +87,7 @@ export async function getDockerRunStates(
   for (const service of services) {
     let status: RuntimeStatus = "stopped"
     let statusMessage: string | undefined
+    let conflicts: RunState["conflicts"]
     const port = service.ports?.[0]
     const serviceName = service.name.toLowerCase()
     const containerName = service.containerName?.toLowerCase()
@@ -105,6 +106,18 @@ export async function getDockerRunStates(
         // Service name matches but containerName doesn't → conflict
         status = "conflict"
         statusMessage = `Conflict with running container: ${nameMatch.Names}`
+        conflicts = [
+          {
+            kind: "docker",
+            message: statusMessage,
+            stopTargets: [
+              {
+                kind: "docker-container",
+                containerId: nameMatch.ID,
+              },
+            ],
+          },
+        ]
       } else {
         // Both names match (or no containerName set) → running
         status = "running"
@@ -133,6 +146,18 @@ export async function getDockerRunStates(
         // containerName matches but service name didn't → conflict
         status = "conflict"
         statusMessage = `Conflict with running container: ${containerNameMatch.Names}`
+        conflicts = [
+          {
+            kind: "docker",
+            message: statusMessage,
+            stopTargets: [
+              {
+                kind: "docker-container",
+                containerId: containerNameMatch.ID,
+              },
+            ],
+          },
+        ]
       }
     }
 
@@ -175,13 +200,48 @@ export async function getDockerRunStates(
       if (portConflict) {
         status = "conflict"
         statusMessage = `Conflict with running container: ${portConflict.Names}`
+        conflicts = [
+          {
+            kind: "docker",
+            message: statusMessage,
+            stopTargets: [
+              {
+                kind: "docker-container",
+                containerId: portConflict.ID,
+              },
+            ],
+          },
+        ]
       } else {
         const taken = await isPortInUse(port)
         if (taken) {
           status = "conflict"
           statusMessage = `Port ${port} is already in use`
+          conflicts = [
+            {
+              kind: "port",
+              message: statusMessage,
+              stopTargets: [{ kind: "port", port }],
+            },
+          ]
         }
       }
+    }
+
+    if (status === "conflict" && conflicts == null) {
+      conflicts = [
+        {
+          kind: "docker",
+          message: statusMessage ?? `Conflict for service ${service.name}`,
+          stopTargets: [
+            {
+              kind: "docker-service",
+              workspacePath,
+              service: service.name,
+            },
+          ],
+        },
+      ]
     }
 
     results.push({
@@ -192,6 +252,7 @@ export async function getDockerRunStates(
       statusMessage,
       command: `docker compose up ${service.name}`,
       port,
+      conflicts,
     })
   }
 
