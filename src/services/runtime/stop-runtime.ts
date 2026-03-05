@@ -1,10 +1,10 @@
-import { exec } from "node:child_process"
+import * as childProcess from "node:child_process"
 
 import type { RunState, StopTarget } from "../../types/workspace-runtime.js"
 import { logger } from "../../utils/logging/logger.js"
 
 function execStop(command: string, cwd?: string) {
-  exec(command, cwd ? { cwd } : undefined, (err) => {
+  childProcess.exec(command, cwd ? { cwd } : undefined, (err) => {
     if (err) {
       // eslint-disable-next-line no-console
       console.error(`Failed to run stop command "${command}": ${err}`)
