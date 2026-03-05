@@ -12,6 +12,7 @@ type ColComposeProps = {
   composeCommandCells: ComposeCommandCell[]
   composeServiceCells: ComposeServiceCell[]
   composeServiceStatuses?: Record<string, RuntimeStatus>
+  composeServicePorts?: Record<string, number>
   row: number
   col: number
 }
@@ -20,6 +21,7 @@ export function ColCompose({
   composeCommandCells,
   composeServiceCells,
   composeServiceStatuses,
+  composeServicePorts,
   row,
   col,
 }: ColComposeProps) {
@@ -49,6 +51,9 @@ export function ColCompose({
         {composeServiceCells.map((cell, index) => {
           const isSelected = row === cell.row && col === cell.col
           const serviceStatus = composeServiceStatuses?.[cell.service.name]
+          const runtimePort = composeServicePorts?.[cell.service.name]
+          const displayedPorts =
+            runtimePort != null ? [runtimePort] : (cell.service.ports ?? [])
 
           return (
             <Box
@@ -75,12 +80,20 @@ export function ColCompose({
                 {cell.service.name}
               </Text>
               {cell.service.image && (
-                <Text {...styles.text()}>{cell.service.image}</Text>
+                <Box gap={1}>
+                  <Text {...styles.text()} dimColor>
+                    image:
+                  </Text>
+                  <Text {...styles.text()}>{cell.service.image}</Text>
+                </Box>
               )}
-              {cell.service.ports && cell.service.ports.length > 0 && (
-                <Text {...styles.text()}>
-                  Ports: {cell.service.ports.join(", ")}
-                </Text>
+              {displayedPorts.length > 0 && (
+                <Box gap={1}>
+                  <Text {...styles.text()} dimColor>
+                    ports:
+                  </Text>
+                  <Text {...styles.text()}>{displayedPorts.join(", ")}</Text>
+                </Box>
               )}
             </Box>
           )
