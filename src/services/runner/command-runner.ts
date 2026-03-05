@@ -43,6 +43,11 @@ export function runCellCommand(
     return
   }
 
+  if (options?.detached) {
+    runShellCommand(command, cwd, options)
+    return
+  }
+
   switch (runner) {
     case "zellij":
       runZellijCommand(command, cwd, options)
