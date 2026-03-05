@@ -213,15 +213,6 @@ export async function getNodeRunStates(
             ],
           },
         ]
-      } else {
-        statusMessage = `Process running (pids: ${allPids.join(", ")}) but no detected listening port`
-        conflicts = [
-          {
-            kind: "process",
-            message: statusMessage,
-            stopTargets: allPids.map((pid) => ({ kind: "pid" as const, pid })),
-          },
-        ]
       }
     }
 
