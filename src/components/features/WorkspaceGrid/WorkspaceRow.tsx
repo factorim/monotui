@@ -38,7 +38,7 @@ export function WorkspaceRow({
       borderColor={"gray"}
       backgroundColor={row === rowNb ? "#0b1515" : undefined}
     >
-      <ResponsiveBox width={{ s: "25%", m: "25%", l: "24%", xl: "24%" }}>
+      <ResponsiveBox width={{ s: "25%", m: "25%", l: "24%", xl: "20%" }}>
         <Text
           {...styles.action()}
           inverse={row === workspaceCell?.row && col === workspaceCell?.col}
@@ -52,18 +52,18 @@ export function WorkspaceRow({
           </Text>
         )}
       </ResponsiveBox>
-      <ResponsiveBox width={{ s: null, m: "15%", l: "14%", xl: "18%" }}>
+      <ResponsiveBox width={{ s: null, m: "15%", l: "14%", xl: "12%" }}>
         <Text {...styles.text()} dimColor>
           {workspaceCell?.project.type}
         </Text>
       </ResponsiveBox>
-      <ResponsiveBox width={{ s: null, m: null, l: "24%", xl: "28%" }}>
+      <ResponsiveBox width={{ s: null, m: null, l: "20%", xl: "18%" }}>
         <Text {...styles.text()} dimColor>
           {workspaceCell?.project.path}
         </Text>
       </ResponsiveBox>
       <ResponsiveBox
-        width={{ s: "30%", m: "25%", l: "24%", xl: "28%" }}
+        width={{ s: "30%", m: "25%", l: "24%", xl: "20%" }}
         gap={3}
       >
         {quickActionCells.map((actionCell, index) => (
@@ -85,7 +85,7 @@ export function WorkspaceRow({
       </ResponsiveBox>
 
       <ResponsiveBox
-        width={{ s: "45%", m: "35%", l: "23%", xl: "23%" }}
+        width={{ s: "45%", m: "35%", l: "27%", xl: "30%" }}
         gap={3}
       >
         {runtimeCells.map((runtimeCell, index) => (

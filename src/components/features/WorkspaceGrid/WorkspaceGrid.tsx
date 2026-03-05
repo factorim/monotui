@@ -30,19 +30,19 @@ export function WorkspaceGrid() {
     >
       <Box flexDirection="column" flexGrow={1}>
         <Box width="100%" borderColor="gray">
-          <ResponsiveBox width={{ s: "25%", m: "25%", l: "24%", xl: "24%" }}>
+          <ResponsiveBox width={{ s: "25%", m: "25%", l: "24%", xl: "20%" }}>
             <Text {...styles.headerText()}>Name</Text>
           </ResponsiveBox>
-          <ResponsiveBox width={{ s: null, m: "15%", l: "14%", xl: "18%" }}>
+          <ResponsiveBox width={{ s: null, m: "15%", l: "14%", xl: "12%" }}>
             <Text {...styles.headerText()}>Type</Text>
           </ResponsiveBox>
-          <ResponsiveBox width={{ s: null, m: null, l: "24%", xl: "28%" }}>
+          <ResponsiveBox width={{ s: null, m: null, l: "20%", xl: "18%" }}>
             <Text {...styles.headerText()}>Path</Text>
           </ResponsiveBox>
-          <ResponsiveBox width={{ s: "30%", m: "25%", l: "24%", xl: "28%" }}>
+          <ResponsiveBox width={{ s: "30%", m: "25%", l: "24%", xl: "20%" }}>
             <Text {...styles.headerText()}>Quick Actions</Text>
           </ResponsiveBox>
-          <ResponsiveBox width={{ s: "45%", m: "35%", l: "23%", xl: "23%" }}>
+          <ResponsiveBox width={{ s: "45%", m: "35%", l: "27%", xl: "30%" }}>
             <Text {...styles.headerText()}>State</Text>
           </ResponsiveBox>
         </Box>
