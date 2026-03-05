@@ -45,18 +45,31 @@ async function getDockerContainers(): Promise<DockerPsEntry[]> {
 }
 
 /**
- * Extract host ports from Docker's Ports string.
+ * Extract ports from Docker's Ports string.
+ * Prefers published host ports when present, otherwise falls back to exposed container ports.
  * e.g. "0.0.0.0:5432->5432/tcp, :::5432->5432/tcp" → [5432]
+ * e.g. "6379/tcp" → [6379]
  */
 function parseDockerPorts(portsStr: string): number[] {
   if (!portsStr) return []
-  const ports = new Set<number>()
-  // Match patterns like "0.0.0.0:5432->5432/tcp" or ":::3000->3000/tcp"
-  const matches = portsStr.matchAll(/:(\d+)->/g)
-  for (const match of matches) {
-    ports.add(Number.parseInt(match[1], 10))
+
+  const publishedPorts = new Set<number>()
+  const exposedPorts = new Set<number>()
+
+  // Match published host ports like "0.0.0.0:5432->5432/tcp" or ":::3000->3000/tcp"
+  const publishedMatches = portsStr.matchAll(/:(\d+)->/g)
+  for (const match of publishedMatches) {
+    publishedPorts.add(Number.parseInt(match[1], 10))
   }
-  return [...ports]
+
+  // Match exposed-only ports like "6379/tcp" (no host mapping)
+  const exposedMatches = portsStr.matchAll(/(?:^|,\s*)(\d+)\/(?:tcp|udp)\b/g)
+  for (const match of exposedMatches) {
+    exposedPorts.add(Number.parseInt(match[1], 10))
+  }
+
+  const preferred = publishedPorts.size > 0 ? publishedPorts : exposedPorts
+  return Array.from(preferred).sort((a, b) => a - b)
 }
 
 /**
