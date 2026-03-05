@@ -1,5 +1,12 @@
 # @factorim/monotui
 
+## 0.5.0
+
+### Minor Changes
+
+- Add tmux runner to split in new terminal ([#24](https://github.com/factorim/monotui/pull/24))
+  Start to add Zellij Runner
+
 ## 0.4.0
 
 ### Minor Changes
