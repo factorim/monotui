@@ -5,6 +5,7 @@ import { useContext } from "react"
 import { WorkspaceGridContext } from "../../../contexts/WorkspaceGridContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import { getWorkspaceCellByPosition } from "../../../utils/workspace/workspace-grid.js"
+import { Runner } from "../../ui/Runner.js"
 
 export function WorkspaceInfo() {
   const { workspacesNavigationGrid, row, col } =
@@ -18,70 +19,51 @@ export function WorkspaceInfo() {
   )
 
   return (
-    <Box flexDirection="column" width="100%" paddingBottom={1}>
+    <Box
+      width="100%"
+      paddingBottom={1}
+      paddingLeft={1}
+      paddingRight={1}
+      justifyContent="space-between"
+    >
       {selectedCell && selectedCell.type === "workspace" && (
-        <Box flexDirection="column">
-          <Box gap={1}>
-            <Text {...styles.info()} inverse>
-              {` ${selectedCell.project.path} `}
-            </Text>
-            <Text {...styles.text()} dimColor>
-              {selectedCell.project.description}
-            </Text>
-          </Box>
-          {/* <Box gap={2}>
-            {Array.isArray(selectedCell.project.facets.makefile?.commands) && (
-              <Text {...styles.text()} dimColor>
-                makefile commands:
-                {selectedCell.project.facets.makefile.commands.length}
-              </Text>
-            )}
-            {Array.isArray(
-              selectedCell.project.facets.packageJson?.scripts,
-            ) && (
-              <Text {...styles.text()} dimColor>
-                package.json scripts:
-                {selectedCell.project.facets.packageJson.scripts.length}
-              </Text>
-            )}
-            {Array.isArray(selectedCell.project.facets.compose?.services) && (
-              <Text {...styles.text()} dimColor>
-                docker compose services:
-                {selectedCell.project.facets.compose.services.length}
-              </Text>
-            )}
-          </Box> */}
+        <Box gap={1}>
+          <Text {...styles.info()} inverse>
+            {` ${selectedCell.project.path} `}
+          </Text>
+          <Text {...styles.text()} dimColor>
+            {selectedCell.project.description}
+          </Text>
         </Box>
       )}
       {selectedCell && selectedCell.type === "quickAction" && (
-        <Box>
-          <Box gap={1}>
-            <Text {...styles.info()} inverse>
-              {` ${selectedCell.action.facetPath} `}
+        <Box gap={1}>
+          <Text {...styles.info()} inverse>
+            {` ${selectedCell.action.facetPath} `}
+          </Text>
+          <Box>
+            <Text {...styles.action()} inverse>
+              {` ${selectedCell.action.command} `}
             </Text>
-            <Box>
-              <Text {...styles.action()} inverse>
-                {` ${selectedCell.action.command} `}
-              </Text>
-            </Box>
           </Box>
         </Box>
       )}
       {selectedCell && selectedCell.type === "runtime" && (
-        <Box>
-          <Box gap={1}>
-            <Text {...styles.action()} inverse>
-              {` ${selectedCell.runState.command} `}
+        <Box gap={1}>
+          <Text {...styles.action()} inverse>
+            {` ${selectedCell.runState.command} `}
+          </Text>
+          {selectedCell.runState.statusMessage && (
+            <Text {...styles.error()}>
+              {selectedCell.runState.statusMessage}
             </Text>
-            {selectedCell.runState.statusMessage && (
-              <Text {...styles.error()}>
-                {selectedCell.runState.statusMessage}
-              </Text>
-            )}
-          </Box>
-          {/* <Text {...styles.action()}>{selectedCell.runState.command}</Text> */}
+          )}
         </Box>
       )}
+
+      <Box>
+        <Runner />
+      </Box>
     </Box>
   )
 }

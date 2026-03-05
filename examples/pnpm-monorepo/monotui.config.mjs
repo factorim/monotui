@@ -21,7 +21,7 @@ export default {
     },
   },
   execution: {
-    useTmux: true,
+    runner: "tmux",
   },
   quickActions: [],
   logging: {
