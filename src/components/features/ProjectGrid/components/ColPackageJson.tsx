@@ -28,13 +28,15 @@ export function ColPackageJson({
         </Text> */}
       </Box>
       {packageJsonCells.map((cell) => (
-        <Box key={cell.script.command} width="100%">
+        <Box key={cell.script.command} width="100%" gap={1}>
           <Text
             {...styles.action()}
             inverse={row === cell.row && col === cell.col}
           >
             {cell.script.name}
           </Text>
+
+          <Text {...styles.notification()}>[q]</Text>
         </Box>
       ))}
     </Box>

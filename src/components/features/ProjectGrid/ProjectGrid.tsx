@@ -1,7 +1,7 @@
 import { useComponentTheme } from "@inkjs/ui"
 import { Box, Text } from "ink"
 import { useContext } from "react"
-
+import { getConfig } from "../../../config/config.js"
 import { ProjectGridContext } from "../../../contexts/ProjectGridContext.js"
 import { WorkspaceDiscoveryContext } from "../../../contexts/WorkspaceDiscoveryContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
@@ -13,6 +13,9 @@ import { ColPackageJson } from "./components/ColPackageJson.js"
 import { EmptyCol } from "./components/EmptyCol.js"
 
 export function ProjectGrid() {
+  const config = getConfig()
+  const _configuredQuickActions = config.quickActions ?? []
+
   const { project, workspaceRuntimes } = useContext(WorkspaceDiscoveryContext)
   const { projectGrid, row, col } = useContext(ProjectGridContext)
   const { styles } = useComponentTheme<GridTheme>("GridTheme")

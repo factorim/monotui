@@ -23,7 +23,54 @@ export default {
   execution: {
     runner: "tmux",
   },
-  quickActions: [],
+  quickActions: [
+    {
+      workspacePath: ".",
+      facets: [],
+    },
+    {
+      workspacePath: "apps/admin",
+      facets: [
+        {
+          facetType: "packageJson",
+          facetPath: "apps/admin/package.json",
+          name: "xoxo",
+          command: "pnpm run dev",
+          exec: "vite",
+          order: 1,
+        },
+      ],
+    },
+    {
+      workspacePath: "apps/api",
+      facets: [
+        {
+          facetType: "makefile",
+          facetPath: "apps/api/Makefile",
+          name: "xoxo",
+          command: "make dev",
+          exec: "pnpm run dev",
+          order: 1,
+        },
+        {
+          facetType: "compose",
+          facetPath: "apps/api/docker-compose.yml",
+          name: "xoxo",
+          command: "docker compose up",
+          exec: "docker compose up",
+          order: 2,
+        },
+        {
+          facetType: "compose",
+          facetPath: "apps/api/docker-compose.yml",
+          name: "xoxo (detached)",
+          command: "docker compose up -d",
+          exec: "docker compose up -d",
+          order: 2,
+        },
+      ],
+    },
+  ],
   logging: {
     level: "debug",
     file: true,
