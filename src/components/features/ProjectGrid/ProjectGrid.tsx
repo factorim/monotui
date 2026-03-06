@@ -35,6 +35,21 @@ export function ProjectGrid() {
         return acc
       }, {}) ?? {}
 
+  const composeServicePorts: Record<string, number> =
+    workspaceRuntimes
+      .find(
+        (workspaceRuntime) => workspaceRuntime.workspacePath === project?.path,
+      )
+      ?.runStates.filter(
+        (runState) => runState.type === "service" && runState.port != null,
+      )
+      .reduce<Record<string, number>>((acc, runState) => {
+        if (runState.port != null) {
+          acc[runState.name] = runState.port
+        }
+        return acc
+      }, {}) ?? {}
+
   return (
     <Box
       flexDirection="column"
@@ -66,6 +81,7 @@ export function ProjectGrid() {
             composeCommandCells={composeCommandCells}
             composeServiceCells={composeServiceCells}
             composeServiceStatuses={composeServiceStatuses}
+            composeServicePorts={composeServicePorts}
             row={row}
             col={col}
           />

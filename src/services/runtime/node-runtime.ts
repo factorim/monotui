@@ -1,128 +1,58 @@
-import { execFile } from "node:child_process"
-import { promisify } from "node:util"
+import { readlink } from "node:fs/promises"
+
+import { pidToPorts } from "pid-port"
+import pidtree from "pidtree"
+import psList, { type ProcessDescriptor } from "ps-list"
 
 import type { PackageJsonScript } from "../../types/workspace.js"
 import type { RunState } from "../../types/workspace-runtime.js"
 
-const execFileAsync = promisify(execFile)
+const CURRENT_UID =
+  typeof process.getuid === "function" ? process.getuid() : undefined
 
-async function sh(cmd: string, args: string[], opts?: { cwd?: string }) {
-  const { stdout } = await execFileAsync(cmd, args, {
-    cwd: opts?.cwd,
-    maxBuffer: 10 * 1024 * 1024,
-  })
-  return String(stdout ?? "")
+function normalizeSpaces(value: string): string {
+  return value.replace(/\s+/g, " ").trim()
 }
 
-async function getPsOutput(): Promise<string> {
-  // Try GNU procps first
-  try {
-    // Include both command and working directory
-    return await sh("ps", ["-eo", "pid=,args=,cwd="])
-  } catch {
-    // Fallback: BSD / busybox style
-    // BSD ps doesn't have cwd, so we'll need to read it from /proc later
-    return await sh("ps", ["ax", "-o", "pid=", "-o", "command="])
-  }
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
-async function getPidCwd(pid: number): Promise<string | null> {
-  try {
-    // On Linux, read the cwd symlink
-    const cwd = await sh("readlink", ["-f", `/proc/${pid}/cwd`])
-    return cwd.trim()
-  } catch {
-    return null
-  }
-}
+function buildCommandMatchers(command: string): RegExp[] {
+  const normalized = normalizeSpaces(command)
+  const matchers: RegExp[] = []
 
-function extractCoreCommand(command: string): string {
-  // Remove common package managers and extract the actual command
-  const trimmed = command.trim()
-
-  // Strip npm/yarn/pnpm run prefix
-  const withoutPkgManager = trimmed
-    .replace(/^(npm|yarn|pnpm|bun)\s+run\s+/, "")
-    .replace(/^(npx|bunx)\s+/, "")
-
-  // Get the first significant part (the actual executable/script)
-  // e.g., "next dev --turbo -p 3001" -> "next dev"
-  // e.g., "vite --port 5173" -> "vite"
-  const parts = withoutPkgManager.split(/\s+/)
-
-  // Take first 1-2 parts depending on common patterns
-  if (
-    parts.length >= 2 &&
-    (parts[1] === "dev" ||
-      parts[1] === "start" ||
-      parts[1] === "serve" ||
-      parts[1] === "preview")
-  ) {
-    return `${parts[0]} ${parts[1]}`
+  if (normalized) {
+    const exactPattern = normalized
+      .split(" ")
+      .map((part) => escapeRegExp(part))
+      .join("\\s+")
+    matchers.push(new RegExp(`(^|[\\s"'=/])${exactPattern}($|[\\s"'])`))
   }
 
-  return parts[0] || withoutPkgManager
-}
-
-function buildCommandNeedles(command: string): string[] {
-  const trimmed = command.trim()
-  const needles = new Set<string>()
-
-  if (trimmed) needles.add(trimmed)
-
-  const coreCommand = extractCoreCommand(trimmed)
-  if (coreCommand) needles.add(coreCommand)
-
-  const runMatch = trimmed.match(
-    /^(npm|yarn|pnpm|bun)\s+(?:--?\S+\s+)*run\s+([^\s]+)/,
+  const runMatch = normalized.match(
+    /^(npm|pnpm|yarn|bun)\s+(?:--\S+\s+)*run\s+([^\s]+)/,
   )
   if (runMatch) {
-    const pm = runMatch[1]
-    const scriptName = runMatch[2]
+    const packageManager = escapeRegExp(runMatch[1])
+    const scriptName = escapeRegExp(runMatch[2])
 
-    needles.add(`${pm} run ${scriptName}`)
-    needles.add(scriptName)
+    matchers.push(
+      new RegExp(
+        `(^|[\\s"'=/])${packageManager}\\s+(?:--\\S+\\s+)*run\\s+${scriptName}($|[\\s"'])`,
+      ),
+    )
+
+    if (runMatch[1] === "pnpm" || runMatch[1] === "yarn") {
+      matchers.push(
+        new RegExp(
+          `(^|[\\s"'=/])${packageManager}\\s+(?:--\\S+\\s+)*${scriptName}($|[\\s"'])`,
+        ),
+      )
+    }
   }
 
-  const pnpmDirectMatch = trimmed.match(
-    /^pnpm\s+(?:--?\S+\s+)*(dev|start|serve|preview)\b/,
-  )
-  if (pnpmDirectMatch) {
-    needles.add(`pnpm ${pnpmDirectMatch[1]}`)
-    needles.add(pnpmDirectMatch[1])
-  }
-
-  return Array.from(needles)
-}
-
-function buildExecNeedles(execCommand: string): string[] {
-  const trimmed = execCommand.trim()
-  if (!trimmed) return []
-
-  const needles = new Set<string>()
-  needles.add(trimmed)
-
-  const tokens = trimmed
-    .split(/\s+/)
-    .filter(Boolean)
-    .filter((token) => !/^[A-Za-z_][A-Za-z0-9_]*=.*/.test(token))
-
-  if (tokens.length === 1) {
-    needles.add(tokens[0])
-  }
-
-  if (
-    tokens.length >= 2 &&
-    (tokens[1] === "dev" ||
-      tokens[1] === "start" ||
-      tokens[1] === "serve" ||
-      tokens[1] === "preview" ||
-      tokens[1] === "build")
-  ) {
-    needles.add(`${tokens[0]} ${tokens[1]}`)
-  }
-
-  return Array.from(needles)
+  return matchers
 }
 
 function isWorkspaceRelatedPath(
@@ -132,135 +62,105 @@ function isWorkspaceRelatedPath(
   const normalize = (value: string) => value.replace(/\/+$/, "")
 
   const processCwdNormalized = normalize(processCwd)
-  const workspacePathNormalized = normalize(workspacePath)
+  const workspacePathNormalized = normalize(workspacePath).replace(
+    /\/package\.json$/,
+    "",
+  )
 
   return (
     processCwdNormalized === workspacePathNormalized ||
-    processCwdNormalized.startsWith(`${workspacePathNormalized}/`) ||
-    workspacePathNormalized.startsWith(`${processCwdNormalized}/`)
+    processCwdNormalized.startsWith(`${workspacePathNormalized}/`)
   )
 }
 
-async function getPidsMatchingCommandInWorkspace(params: {
-  command: string
-  exec: string
-  scriptName: string
-  absolutePath: string
-}): Promise<number[]> {
-  const out = await getPsOutput()
+async function getPidCwd(pid: number): Promise<string | null> {
+  try {
+    return await readlink(`/proc/${pid}/cwd`)
+  } catch {
+    return null
+  }
+}
 
-  const commandNeedles = new Set<string>([
-    ...buildCommandNeedles(params.command),
-    ...buildExecNeedles(params.exec),
-  ])
-  const wsNeedle = params.absolutePath.trim()
+function getProcessText(process: ProcessDescriptor): string {
+  return [process.cmd, process.path, process.name].filter(Boolean).join(" ")
+}
+
+async function getMatchingRootPids(params: {
+  command: string
+  absolutePath: string
+  processes: ProcessDescriptor[]
+}): Promise<number[]> {
+  const matchers = buildCommandMatchers(params.command)
+  const workspacePath = params.absolutePath.trim()
   const pids: number[] = []
 
-  for (const line of out.split("\n")) {
-    const trimmed = line.trim()
-    if (!trimmed) continue
+  for (const process of params.processes) {
+    if (!Number.isFinite(process.pid)) continue
+    if (
+      CURRENT_UID !== undefined &&
+      process.uid !== undefined &&
+      process.uid !== CURRENT_UID
+    ) {
+      continue
+    }
 
-    // Parse pid and command
-    const firstSpace = trimmed.indexOf(" ")
-    if (firstSpace <= 0) continue
-
-    const pidStr = trimmed.slice(0, firstSpace).trim()
-    const rest = trimmed.slice(firstSpace + 1)
-
-    const pid = Number(pidStr)
-    if (!Number.isFinite(pid)) continue
-
-    const matchesCommand = Array.from(commandNeedles).some(
-      (needle) => needle && rest.includes(needle),
-    )
+    const processText = getProcessText(process)
+    const matchesCommand = matchers.some((matcher) => matcher.test(processText))
     if (!matchesCommand) continue
 
-    // Check if the command line includes the workspace path OR
-    // check if the process cwd is within the workspace
-    if (rest.includes(wsNeedle)) {
-      pids.push(pid)
-    } else {
-      // Fallback: check the process working directory
-      const cwd = await getPidCwd(pid)
-      if (cwd && isWorkspaceRelatedPath(cwd, wsNeedle)) {
-        pids.push(pid)
-      }
+    if (processText.includes(workspacePath)) {
+      pids.push(process.pid)
+      continue
+    }
+
+    const cwd = await getPidCwd(process.pid)
+    if (cwd && isWorkspaceRelatedPath(cwd, workspacePath)) {
+      pids.push(process.pid)
     }
   }
 
   return Array.from(new Set(pids))
 }
 
-type PidToPorts = Map<number, Set<number>>
+async function getProcessFamilyPids(rootPids: number[]): Promise<number[]> {
+  const allPids = new Set<number>()
 
-function parseSsListeningTcp(out: string): PidToPorts {
-  const pidToPorts: PidToPorts = new Map()
+  for (const rootPid of rootPids) {
+    allPids.add(rootPid)
 
-  for (const rawLine of out.split("\n")) {
-    const line = rawLine.trim()
-    if (!line) continue
-
-    // Grab a port from "*:3000", "127.0.0.1:5173", "[::]:3000", etc.
-    // This is a heuristic that works for typical `ss -lptnH` output.
-    const portMatch = line.match(/:(\d+)\s+/)
-    if (!portMatch) continue
-    const port = Number(portMatch[1])
-    if (!Number.isFinite(port)) continue
-
-    // Extract pids from users:(("...",pid=123,...),(...pid=456...))
-    const pidMatches = line.matchAll(/pid=(\d+)/g)
-    for (const m of pidMatches) {
-      const pid = Number(m[1])
-      if (!Number.isFinite(pid)) continue
-
-      if (!pidToPorts.has(pid)) pidToPorts.set(pid, new Set())
-      pidToPorts.get(pid)?.add(port)
+    try {
+      const descendants = await pidtree(rootPid, { root: false })
+      descendants.forEach((pid) => {
+        if (Number.isFinite(pid)) allPids.add(pid)
+      })
+    } catch {
+      // ignore pidtree failures for short-lived processes
     }
   }
 
-  return pidToPorts
+  return Array.from(allPids)
 }
 
-async function getListeningPortsForPids(
-  pids: number[],
-): Promise<Map<number, number[]>> {
-  if (pids.length === 0) return new Map()
+async function getListeningPortsForPids(pids: number[]): Promise<number[]> {
+  const ports = new Set<number>()
+  const uniquePids = Array.from(
+    new Set(pids.filter((pid) => Number.isFinite(pid))),
+  )
 
-  const ssOut = await sh("ss", ["-lptnH"])
-  const pidToPortsSet = parseSsListeningTcp(ssOut)
-
-  const pidToPorts = new Map<number, number[]>()
-  for (const pid of pids) {
-    const ports = pidToPortsSet.get(pid)
-    pidToPorts.set(pid, ports ? Array.from(ports).sort((a, b) => a - b) : [])
-  }
-  return pidToPorts
-}
-
-async function getChildPids(parentPid: number): Promise<number[]> {
   try {
-    const out = await sh("pgrep", ["-P", String(parentPid)])
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map(Number)
-      .filter(Number.isFinite)
+    const pidPortsMap = await pidToPorts(uniquePids)
+    for (const pidPorts of pidPortsMap.values()) {
+      for (const port of pidPorts.values()) {
+        if (Number.isFinite(port) && port >= 1 && port <= 65535) {
+          ports.add(port)
+        }
+      }
+    }
   } catch {
-    return []
-  }
-}
-
-async function getAllDescendantPids(pid: number): Promise<number[]> {
-  const descendants: number[] = [pid]
-  const children = await getChildPids(pid)
-
-  for (const child of children) {
-    const childDescendants = await getAllDescendantPids(child)
-    descendants.push(...childDescendants)
+    // ignore processes with no open/listening ports
   }
 
-  return descendants
+  return Array.from(ports).sort((a, b) => a - b)
 }
 
 export async function getNodeRunStates(
@@ -268,57 +168,51 @@ export async function getNodeRunStates(
   workspacePath: string,
   scripts: PackageJsonScript[],
 ): Promise<RunState[]> {
+  const processes = await psList({ all: false })
+
   const results: RunState[] = []
 
   for (const script of scripts) {
-    const name = script.name as string
-    const command = script.command as string
+    const name = script.name
+    const command = script.command
 
-    const pids = await getPidsMatchingCommandInWorkspace({
+    const rootPids = await getMatchingRootPids({
       command,
-      exec: script.exec,
-      scriptName: name,
       absolutePath,
+      processes,
     })
 
-    // Get all descendant processes
-    const allPids = new Set<number>()
-    for (const pid of pids) {
-      const descendants = await getAllDescendantPids(pid)
-      descendants.forEach((p) => {
-        allPids.add(p)
-      })
-    }
-
-    const allPidsArray = Array.from(allPids)
-    const pidToPorts = await getListeningPortsForPids(allPidsArray)
-
-    const allPorts = new Set<number>()
-    for (const ports of pidToPorts.values()) {
-      for (const p of ports) allPorts.add(p)
-    }
-
-    const portsSorted = Array.from(allPorts).sort((a, b) => a - b)
+    const allPids = await getProcessFamilyPids(rootPids)
+    const ports = await getListeningPortsForPids(allPids)
 
     let status: RunState["status"] = "stopped"
     let port: number | undefined
     let statusMessage: string | undefined
+    let conflicts: RunState["conflicts"]
 
-    if (pids.length === 0) {
+    if (rootPids.length === 0) {
       status = "stopped"
     } else {
       status = "running"
-      if (portsSorted.length === 1) {
-        port = portsSorted[0]
-      } else if (portsSorted.length > 1) {
+
+      if (ports.length === 1) {
+        port = ports[0]
+      } else if (ports.length > 1) {
         status = "conflict"
-        statusMessage = `Multiple listening ports detected: ${portsSorted.join(
-          ", ",
-        )} (pids: ${allPidsArray.join(", ")})`
-      } else {
-        statusMessage = `Process running (pids: ${allPidsArray.join(
-          ", ",
-        )}) but no LISTEN TCP port detected`
+        statusMessage = `Multiple listening ports detected: ${ports.join(", ")} (pids: ${allPids.join(", ")})`
+        conflicts = [
+          {
+            kind: "port",
+            message: statusMessage,
+            stopTargets: [
+              ...ports.map((conflictPort) => ({
+                kind: "port" as const,
+                port: conflictPort,
+              })),
+              ...allPids.map((pid) => ({ kind: "pid" as const, pid })),
+            ],
+          },
+        ]
       }
     }
 
@@ -330,6 +224,7 @@ export async function getNodeRunStates(
       statusMessage,
       command,
       port,
+      conflicts,
     })
   }
 

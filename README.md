@@ -6,7 +6,7 @@ Start, stop, and monitor all your apps, packages, and infrastructure from one in
 
 This project was developed using Ink/React for rapid prototyping.
 
-![MonoTUI screenshot v0.2.0](./docs/images/monotui-screenshot-v0.2.0.png)
+![MonoTUI screenshot v0.2.0](./docs/images/monotui-screenshot-v0.5.1.png)
 
 ## Features
 

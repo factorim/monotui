@@ -48,7 +48,7 @@ export const COMPOSE_COMMANDS = [
   "down",
   "build",
   "stop",
-  "logs",
+  "logs -f",
 ] as const
 
 export type ComposeCommandName = (typeof COMPOSE_COMMANDS)[number]
