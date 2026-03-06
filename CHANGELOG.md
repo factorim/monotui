@@ -1,5 +1,14 @@
 # @factorim/monotui
 
+## 0.5.1
+
+### Patch Changes
+
+- Fix detached runner ([#26](https://github.com/factorim/monotui/pull/26))
+  Fix Tmux runner
+  Simplify node runtime discovery
+  Enhance responsive grid
+
 ## 0.5.0
 
 ### Minor Changes
