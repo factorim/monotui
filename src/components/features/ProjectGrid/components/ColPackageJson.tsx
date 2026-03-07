@@ -4,6 +4,7 @@ import { Box, Text } from "ink"
 import type { GridTheme } from "../../../../theme/theme.js"
 import type { PackageJsonCell } from "../../../../types/project-grid.js"
 import type { Project } from "../../../../types/workspace.js"
+import { formatFacetId } from "../../../../utils/format.js"
 
 type ColPackageJsonProps = {
   project: Project
@@ -33,7 +34,8 @@ export function ColPackageJson({
             {...styles.action()}
             inverse={row === cell.row && col === cell.col}
           >
-            {cell.script.name}
+            {cell.script.name} - {cell.filepath}{" "}
+            {formatFacetId(cell.filepath, cell.script.name)}
           </Text>
 
           <Text {...styles.notification()}>[q]</Text>

@@ -16,9 +16,6 @@ export function ColMakefile({ makefileCells, row, col }: ColMakefileProps) {
     <Box flexDirection="column" width="32%">
       <Box flexDirection="column" width="100%">
         <Text {...styles.headerText()}>MAKEFILE</Text>
-        {/* <Text {...styles.info()} dimColor>
-          {makefileCells[0]?.filepath}
-        </Text> */}
       </Box>
       {makefileCells.map((cell) => (
         <Box key={cell.command.command} width="100%">
@@ -26,7 +23,7 @@ export function ColMakefile({ makefileCells, row, col }: ColMakefileProps) {
             {...styles.action()}
             inverse={row === cell.row && col === cell.col}
           >
-            {cell.command.name}
+            {cell.command.name} - {cell.filepath}
           </Text>
         </Box>
       ))}

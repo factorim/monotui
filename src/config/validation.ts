@@ -10,6 +10,7 @@ const facetTypes = [
 ] as const satisfies ReadonlyArray<FacetType>
 
 const facetQuickActionSchema = z.object({
+  facetId: z.string(),
   facetType: z.enum(facetTypes),
   facetPath: z.string(),
   name: z.string(),

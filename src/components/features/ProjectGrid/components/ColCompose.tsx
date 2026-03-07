@@ -42,7 +42,7 @@ export function ColCompose({
             {...styles.action()}
             inverse={row === cell.row && col === cell.col}
           >
-            {cell.action.name}
+            {cell.action.name} - {cell.filepath}
           </Text>
         </Box>
       ))}

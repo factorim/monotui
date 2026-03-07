@@ -25,48 +25,31 @@ export default {
   },
   quickActions: [
     {
-      workspacePath: ".",
-      facets: [],
-    },
-    {
-      workspacePath: "apps/admin",
-      facets: [
-        {
-          facetType: "packageJson",
-          facetPath: "apps/admin/package.json",
-          name: "xoxo",
-          command: "pnpm run dev",
-          exec: "vite",
-          order: 1,
-        },
-      ],
-    },
-    {
       workspacePath: "apps/api",
       facets: [
         {
+          facetId: "apps/api/Makefile:dev",
           facetType: "makefile",
           facetPath: "apps/api/Makefile",
-          name: "xoxo",
+          name: "xxdev",
           command: "make dev",
           exec: "pnpm run dev",
-          order: 1,
         },
         {
+          facetId: "apps/api/docker-compose.yml:up",
           facetType: "compose",
           facetPath: "apps/api/docker-compose.yml",
-          name: "xoxo",
+          name: "xxup",
           command: "docker compose up",
           exec: "docker compose up",
-          order: 2,
         },
         {
+          facetId: "apps/api/docker-compose.yml:up--d",
           facetType: "compose",
           facetPath: "apps/api/docker-compose.yml",
-          name: "xoxo (detached)",
+          name: "xxup -d",
           command: "docker compose up -d",
           exec: "docker compose up -d",
-          order: 2,
         },
       ],
     },
