@@ -4,19 +4,22 @@ import { Box, Text } from "ink"
 import type { GridTheme } from "../../../../theme/theme.js"
 import type { PackageJsonCell } from "../../../../types/project-grid.js"
 import type { Project } from "../../../../types/workspace.js"
-import { formatFacetId } from "../../../../utils/format.js"
+import type { WorkspaceQuickAction } from "../../../../types/workspace-quick-actions.js"
+import { hasFacetQuickAction } from "../../../../utils/project/quick-actions.js"
 
 type ColPackageJsonProps = {
   project: Project
   packageJsonCells: PackageJsonCell[]
   row: number
   col: number
+  workspaceQuickAction: WorkspaceQuickAction
 }
 
 export function ColPackageJson({
   packageJsonCells,
   row,
   col,
+  workspaceQuickAction,
 }: ColPackageJsonProps) {
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
 
@@ -28,19 +31,27 @@ export function ColPackageJson({
           {packageJsonCells[0]?.filepath}
         </Text> */}
       </Box>
-      {packageJsonCells.map((cell) => (
-        <Box key={cell.script.command} width="100%" gap={1}>
-          <Text
-            {...styles.action()}
-            inverse={row === cell.row && col === cell.col}
-          >
-            {cell.script.name} - {cell.filepath}{" "}
-            {formatFacetId(cell.filepath, cell.script.name)}
-          </Text>
+      {packageJsonCells.map((cell) => {
+        const facetQuickActionExists = hasFacetQuickAction(
+          workspaceQuickAction,
+          cell.filepath,
+          cell.script.name,
+        )
+        return (
+          <Box key={cell.script.command} width="100%" gap={1}>
+            <Text
+              {...styles.action()}
+              inverse={row === cell.row && col === cell.col}
+            >
+              {cell.script.name}
+            </Text>
 
-          <Text {...styles.notification()}>[q]</Text>
-        </Box>
-      ))}
+            {facetQuickActionExists && (
+              <Text {...styles.notification()}>[q]</Text>
+            )}
+          </Box>
+        )
+      })}
     </Box>
   )
 }

@@ -36,6 +36,14 @@ export default {
           exec: "pnpm run dev",
         },
         {
+          facetId: "apps/api/package.json:dev",
+          facetType: "packageJson",
+          facetPath: "apps/api/package.json",
+          name: "xxdev",
+          command: "make dev",
+          exec: "pnpm run dev",
+        },
+        {
           facetId: "apps/api/docker-compose.yml:up",
           facetType: "compose",
           facetPath: "apps/api/docker-compose.yml",
