@@ -26,7 +26,7 @@ export function ColMakefile({
         <Text {...styles.headerText()}>MAKEFILE</Text>
       </Box>
       {makefileCells.map((cell) => {
-        const facetQuickActionExists = hasFacetQuickAction(
+        const facetQuickAction = hasFacetQuickAction(
           workspaceQuickAction,
           cell.filepath,
           cell.command.name,
@@ -40,8 +40,12 @@ export function ColMakefile({
             >
               {cell.command.name}
             </Text>
-            {facetQuickActionExists && (
-              <Text {...styles.notification()}>[q]</Text>
+            {facetQuickAction && (
+              <Text {...styles.notification()}>
+                {facetQuickAction.order != null
+                  ? `[q${facetQuickAction.order}]`
+                  : "[q]"}
+              </Text>
             )}
           </Box>
         )

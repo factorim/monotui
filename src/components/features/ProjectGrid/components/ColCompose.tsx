@@ -35,13 +35,10 @@ export function ColCompose({
     <Box flexDirection="column" width="32%">
       <Box flexDirection="column" width="100%">
         <Text {...styles.headerText()}>DOCKER COMPOSE</Text>
-        {/* <Text {...styles.info()} dimColor>
-          {composeCommandCells[0]?.filepath}
-        </Text> */}
       </Box>
 
       {composeCommandCells.map((cell) => {
-        const facetQuickActionExists = hasFacetQuickAction(
+        const facetQuickAction = hasFacetQuickAction(
           workspaceQuickAction,
           cell.filepath,
           cell.action.name,
@@ -55,8 +52,12 @@ export function ColCompose({
             >
               {cell.action.name}
             </Text>
-            {facetQuickActionExists && (
-              <Text {...styles.notification()}>[q]</Text>
+            {facetQuickAction && (
+              <Text {...styles.notification()}>
+                {facetQuickAction.order != null
+                  ? `[q${facetQuickAction.order}]`
+                  : "[q]"}
+              </Text>
             )}
           </Box>
         )
@@ -65,7 +66,7 @@ export function ColCompose({
       <Box flexDirection="column" borderStyle="single" marginTop={1}>
         {composeServiceCells.map((cell, index) => {
           const isSelected = row === cell.row && col === cell.col
-          const facetQuickActionExists = hasFacetQuickAction(
+          const _facetQuickAction = hasFacetQuickAction(
             workspaceQuickAction,
             cell.filepath,
             cell.service.name,
@@ -99,9 +100,6 @@ export function ColCompose({
               >
                 {cell.service.name}
               </Text>
-              {facetQuickActionExists && (
-                <Text {...styles.notification()}>[q]</Text>
-              )}
               {cell.service.image && (
                 <Box gap={1}>
                   <Text {...styles.text()} dimColor>

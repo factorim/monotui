@@ -38,8 +38,8 @@ export function hasFacetQuickAction(
   workspaceQuickAction: WorkspaceQuickAction,
   facetPath: string,
   facetName: string,
-): boolean {
+): FacetQuickAction | undefined {
   const facetId = formatFacetId(facetPath, facetName)
 
-  return workspaceQuickAction.facets.some((facet) => facet.facetId === facetId)
+  return workspaceQuickAction.facets.find((facet) => facet.facetId === facetId)
 }

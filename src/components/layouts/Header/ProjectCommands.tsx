@@ -10,6 +10,8 @@ export function ProjectCommands() {
     <Box gap={1}>
       <Text {...styles.action()}>&lt;enter&gt;</Text>
       <Text {...styles.text()}>Execute</Text>
+      <Text {...styles.action()}>&lt;q&gt;</Text>
+      <Text {...styles.text()}>Quick Action</Text>
       <Text {...styles.action()}>&lt;esc&gt;</Text>
       <Text {...styles.text()}>Quit</Text>
     </Box>

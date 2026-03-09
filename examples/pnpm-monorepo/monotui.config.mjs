@@ -34,6 +34,7 @@ export default {
           name: "xxdev",
           command: "make dev",
           exec: "pnpm run dev",
+          order: 1,
         },
         {
           facetId: "apps/api/package.json:dev",
@@ -42,6 +43,7 @@ export default {
           name: "xxdev",
           command: "make dev",
           exec: "pnpm run dev",
+          order: 2,
         },
         {
           facetId: "apps/api/docker-compose.yml:up",
@@ -50,6 +52,7 @@ export default {
           name: "xxup",
           command: "docker compose up",
           exec: "docker compose up",
+          order: 3,
         },
         {
           facetId: "apps/api/docker-compose.yml:up--d",
@@ -58,6 +61,7 @@ export default {
           name: "xxup -d",
           command: "docker compose up -d",
           exec: "docker compose up -d",
+          order: 4,
         },
       ],
     },

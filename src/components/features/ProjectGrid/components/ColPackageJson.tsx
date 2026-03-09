@@ -27,12 +27,9 @@ export function ColPackageJson({
     <Box flexDirection="column" width="32%">
       <Box flexDirection="column" width="100%">
         <Text {...styles.headerText()}>PACKAGE.JSON</Text>
-        {/* <Text {...styles.info()} dimColor>
-          {packageJsonCells[0]?.filepath}
-        </Text> */}
       </Box>
       {packageJsonCells.map((cell) => {
-        const facetQuickActionExists = hasFacetQuickAction(
+        const facetQuickAction = hasFacetQuickAction(
           workspaceQuickAction,
           cell.filepath,
           cell.script.name,
@@ -45,9 +42,12 @@ export function ColPackageJson({
             >
               {cell.script.name}
             </Text>
-
-            {facetQuickActionExists && (
-              <Text {...styles.notification()}>[q]</Text>
+            {facetQuickAction && (
+              <Text {...styles.notification()}>
+                {facetQuickAction.order != null
+                  ? `[q${facetQuickAction.order}]`
+                  : "[q]"}
+              </Text>
             )}
           </Box>
         )
