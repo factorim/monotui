@@ -3,6 +3,7 @@ import { writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { pathToFileURL } from "node:url"
 
+import { updateConfig } from "../../config/config.js"
 import { DEFAULT_CONFIG } from "../../config/defaults.js"
 import type { Config } from "../../types/config.js"
 import type {
@@ -69,7 +70,7 @@ function normalizeFacetOrders(facets: FacetQuickAction[]): FacetQuickAction[] {
     return a.name.localeCompare(b.name)
   })
 
-  return sorted.map((facet, index) => ({ ...facet, order: index }))
+  return sorted.map((facet, index) => ({ ...facet, order: index + 1 }))
 }
 
 async function readConfigFile(rootDir: string): Promise<Config> {
@@ -89,6 +90,7 @@ async function readConfigFile(rootDir: string): Promise<Config> {
 async function writeConfigFile(rootDir: string, config: Config): Promise<void> {
   const configPath = join(rootDir, CONFIG_FILENAME)
   await writeFile(configPath, toConfigContent(config), "utf-8")
+  updateConfig(config)
 }
 
 function upsertWorkspaceQuickAction(
@@ -125,7 +127,7 @@ export async function addFacetQuickActionToConfigFile(
   const normalized = normalizeFacetOrders(workspaceQuickAction.facets)
   const newFacetQuickAction: FacetQuickAction = {
     ...facetQuickAction,
-    order: normalized.length,
+    order: normalized.length + 1,
   }
 
   workspaceQuickAction.facets = [...normalized, newFacetQuickAction]
@@ -155,6 +157,10 @@ export async function deleteFacetQuickActionFromConfigFile(
   const nextFacets = workspaceQuickAction.facets.filter(
     (facet) => facet.facetId !== facetId,
   )
+
+  if (nextFacets.length === workspaceQuickAction.facets.length) {
+    throw new Error(`Quick action facet not found: ${facetId}`)
+  }
 
   workspaceQuickAction.facets = normalizeFacetOrders(nextFacets)
   config.quickActions = quickActions
@@ -193,7 +199,7 @@ export async function moveFacetQuickActionUpInConfigFile(
 
   workspaceQuickAction.facets = facets.map((facet, index) => ({
     ...facet,
-    order: index,
+    order: index + 1,
   }))
   config.quickActions = quickActions
 

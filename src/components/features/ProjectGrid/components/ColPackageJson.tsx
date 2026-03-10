@@ -12,7 +12,7 @@ type ColPackageJsonProps = {
   packageJsonCells: PackageJsonCell[]
   row: number
   col: number
-  workspaceQuickAction: WorkspaceQuickAction
+  workspaceQuickAction?: WorkspaceQuickAction
 }
 
 export function ColPackageJson({

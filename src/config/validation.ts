@@ -2,6 +2,7 @@ import { z } from "zod"
 
 import type { Config } from "../types/config.js"
 import type { FacetType } from "../types/workspace.js"
+import { formatFacetId } from "../utils/format.js"
 
 const facetTypes = [
   "packageJson",
@@ -9,15 +10,20 @@ const facetTypes = [
   "makefile",
 ] as const satisfies ReadonlyArray<FacetType>
 
-const facetQuickActionSchema = z.object({
-  facetId: z.string(),
-  facetType: z.enum(facetTypes),
-  facetPath: z.string(),
-  name: z.string(),
-  command: z.string(),
-  exec: z.string(),
-  order: z.number().optional(),
-})
+const facetQuickActionSchema = z
+  .object({
+    facetId: z.string().optional(),
+    facetType: z.enum(facetTypes),
+    facetPath: z.string(),
+    name: z.string(),
+    command: z.string(),
+    exec: z.string(),
+    order: z.number().int().positive().optional(),
+  })
+  .transform((facet) => ({
+    ...facet,
+    facetId: facet.facetId ?? formatFacetId(facet.facetPath, facet.name),
+  }))
 
 const workspaceQuickActionSchema = z.object({
   workspacePath: z.string(),

@@ -6,7 +6,7 @@ import { ProjectGridContext } from "../../../contexts/ProjectGridContext.js"
 import { WorkspaceDiscoveryContext } from "../../../contexts/WorkspaceDiscoveryContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import type { RuntimeStatus } from "../../../types/workspace-runtime.js"
-import { getWorkspaceQuickAction } from "../../../utils/project/quick-actions.js"
+import { findWorkspaceQuickAction } from "../../../utils/project/quick-actions.js"
 import { Notification } from "../../ui/Notification.js"
 import { ColCompose } from "./components/ColCompose.js"
 import { ColMakefile } from "./components/ColMakefile.js"
@@ -28,7 +28,7 @@ export function ProjectGrid() {
     composeServiceCells,
   } = projectGrid
 
-  const workspaceQuickAction = getWorkspaceQuickAction(
+  const workspaceQuickAction = findWorkspaceQuickAction(
     configuredQuickActions,
     project?.path ?? "",
   )

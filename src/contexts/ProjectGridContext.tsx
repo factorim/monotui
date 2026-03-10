@@ -8,14 +8,20 @@ import {
 import { getConfig } from "../config/config.js"
 import { useProjectGrid } from "../hooks/useProjectGrid.js"
 import {
+  addFacetQuickActionToConfigFile,
+  deleteFacetQuickActionFromConfigFile,
+} from "../services/quick-actions/config-editor.js"
+import {
   getCommandFromCell,
   getExecFromCell,
   runCellCommand,
   shouldKeepTuiOpen,
 } from "../services/runner/command-runner.js"
 import { Page } from "../types/page.js"
-import type { ProjectGrid } from "../types/project-grid.js"
+import type { ProjectGrid, ProjectGridCell } from "../types/project-grid.js"
 import type { Project } from "../types/workspace.js"
+import type { FacetQuickAction } from "../types/workspace-quick-actions.js"
+import { formatFacetId } from "../utils/format.js"
 import {
   buildProjectGrid,
   getProjectCellByPosition,
@@ -54,7 +60,92 @@ export function ProjectGridProvider({
 }: ProjectGridProviderProps) {
   const config = getConfig()
   const projectGrid = useMemo(() => buildProjectGrid(project), [project])
-  const { notifyInfo } = useContext(NotificationContext)
+  const { notifyInfo, notifySuccess, notifyError } =
+    useContext(NotificationContext)
+
+  const toFacetQuickAction = (
+    cell: ProjectGridCell,
+  ): Omit<FacetQuickAction, "order"> | null => {
+    switch (cell.type) {
+      case "makefile":
+        return {
+          facetId: formatFacetId(cell.filepath, cell.command.name),
+          facetType: "makefile",
+          facetPath: cell.filepath,
+          name: cell.command.name,
+          command: cell.command.command,
+          exec: cell.command.exec,
+        }
+      case "packageJson":
+        return {
+          facetId: formatFacetId(cell.filepath, cell.script.name),
+          facetType: "packageJson",
+          facetPath: cell.filepath,
+          name: cell.script.name,
+          command: cell.script.command,
+          exec: cell.script.exec,
+        }
+      case "composeCommand":
+        return {
+          facetId: formatFacetId(cell.filepath, cell.action.name),
+          facetType: "compose",
+          facetPath: cell.filepath,
+          name: cell.action.name,
+          command: cell.action.command,
+          exec: cell.action.command,
+        }
+      default:
+        return null
+    }
+  }
+
+  const toggleQuickAction = async (newRow: number, newCol: number) => {
+    const cell = getProjectCellByPosition(projectGrid, newRow, newCol)
+    if (!cell) return
+
+    const facetQuickAction = toFacetQuickAction(cell)
+    if (!facetQuickAction) {
+      notifyInfo("Quick action toggle is not available for this cell")
+      return
+    }
+
+    try {
+      await deleteFacetQuickActionFromConfigFile(
+        process.cwd(),
+        project.path,
+        facetQuickAction.facetId,
+      )
+      notifySuccess(`Removed quick action: ${facetQuickAction.name}`)
+      return
+    } catch (error) {
+      const message = error instanceof Error ? error.message : ""
+      const isNotFound =
+        message.includes("workspace not found") ||
+        message.includes("facet not found")
+
+      if (!isNotFound) {
+        notifyError(
+          `Failed to remove quick action: ${message || "Unknown error"}`,
+        )
+        return
+      }
+    }
+
+    try {
+      await addFacetQuickActionToConfigFile(
+        process.cwd(),
+        project.path,
+        facetQuickAction,
+      )
+      notifySuccess(`Added quick action: ${facetQuickAction.name}`)
+    } catch (error) {
+      notifyError(
+        `Failed to add quick action: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+      )
+    }
+  }
 
   const { position } = useProjectGrid({
     grid: projectGrid,
@@ -80,6 +171,9 @@ export function ProjectGridProvider({
           }
         }
       }
+    },
+    onToggle: (newRow, newCol) => {
+      void toggleQuickAction(newRow, newCol)
     },
   })
 

@@ -19,6 +19,13 @@ export function getWorkspaceQuickAction(
   return quickAction
 }
 
+export function findWorkspaceQuickAction(
+  quickActions: WorkspaceQuickAction[],
+  workspacePath: string,
+): WorkspaceQuickAction | undefined {
+  return quickActions.find((action) => action.workspacePath === workspacePath)
+}
+
 export function getFacetQuickAction(
   workspaceQuickAction: WorkspaceQuickAction,
   facetId: string,
@@ -35,10 +42,14 @@ export function getFacetQuickAction(
 }
 
 export function hasFacetQuickAction(
-  workspaceQuickAction: WorkspaceQuickAction,
+  workspaceQuickAction: WorkspaceQuickAction | undefined,
   facetPath: string,
   facetName: string,
 ): FacetQuickAction | undefined {
+  if (!workspaceQuickAction) {
+    return undefined
+  }
+
   const facetId = formatFacetId(facetPath, facetName)
 
   return workspaceQuickAction.facets.find((facet) => facet.facetId === facetId)

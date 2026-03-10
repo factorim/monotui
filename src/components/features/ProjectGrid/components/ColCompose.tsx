@@ -17,7 +17,7 @@ type ColComposeProps = {
   composeServicePorts?: Record<string, number>
   row: number
   col: number
-  workspaceQuickAction: WorkspaceQuickAction
+  workspaceQuickAction?: WorkspaceQuickAction
 }
 
 export function ColCompose({
