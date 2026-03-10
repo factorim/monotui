@@ -1,5 +1,11 @@
 # @factorim/monotui
 
+## 0.6.0
+
+### Minor Changes
+
+- Allow add and delete quick actions ([#28](https://github.com/factorim/monotui/pull/28))
+
 ## 0.5.1
 
 ### Patch Changes
