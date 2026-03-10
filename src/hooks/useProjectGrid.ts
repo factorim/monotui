@@ -9,6 +9,7 @@ interface UseNavigationOptions {
   grid: ProjectGrid
   onSelect?: (row: number, col: number) => void
   onToggle?: (row: number, col: number) => void
+  onOrder?: (row: number, col: number) => void
   onExit?: () => void
 }
 
@@ -16,6 +17,7 @@ export function useProjectGrid({
   grid,
   onSelect,
   onToggle,
+  onOrder,
   onExit,
 }: UseNavigationOptions) {
   const [position, setPosition] = useState<CursorPosition>({ row: 0, col: 0 })
@@ -28,6 +30,8 @@ export function useProjectGrid({
   }
 
   useInput((input: string, key: Key) => {
+    const normalizedInput = input.toLowerCase()
+
     if (key.upArrow) {
       setPosition((prev) => {
         const maxRow = getMaxRowForCol(prev.col)
@@ -68,8 +72,11 @@ export function useProjectGrid({
     if (key.return && onSelect) {
       onSelect(position.row, position.col)
     }
-    if (input === "q" && onToggle) {
+    if (normalizedInput === "q" && onToggle) {
       onToggle(position.row, position.col)
+    }
+    if (normalizedInput === "o" && onOrder) {
+      onOrder(position.row, position.col)
     }
     if (key.escape) {
       exit()

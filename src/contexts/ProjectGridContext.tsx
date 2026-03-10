@@ -10,6 +10,7 @@ import { useProjectGrid } from "../hooks/useProjectGrid.js"
 import {
   addFacetQuickActionToConfigFile,
   deleteFacetQuickActionFromConfigFile,
+  moveFacetQuickActionUpInConfigFile,
 } from "../services/quick-actions/config-editor.js"
 import {
   getCommandFromCell,
@@ -147,6 +148,42 @@ export function ProjectGridProvider({
     }
   }
 
+  const orderQuickAction = async (newRow: number, newCol: number) => {
+    const cell = getProjectCellByPosition(projectGrid, newRow, newCol)
+    if (!cell) {
+      notifyError(`xxxx"}`)
+      return
+    }
+
+    const facetQuickAction = toFacetQuickAction(cell)
+    if (!facetQuickAction) {
+      notifyError(`Fxxxxr"}`)
+      return
+    }
+
+    try {
+      await moveFacetQuickActionUpInConfigFile(
+        process.cwd(),
+        project.path,
+        facetQuickAction.facetId,
+      )
+      notifySuccess(`Moved quick action: ${facetQuickAction.name}`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : ""
+      const isNotFound =
+        message.includes("workspace not found") ||
+        message.includes("facet not found")
+
+      if (isNotFound) {
+        return
+      }
+
+      notifyError(
+        `Failed to reorder quick action: ${message || "Unknown error"}`,
+      )
+    }
+  }
+
   const { position } = useProjectGrid({
     grid: projectGrid,
     onExit: () => {
@@ -174,6 +211,9 @@ export function ProjectGridProvider({
     },
     onToggle: (newRow, newCol) => {
       void toggleQuickAction(newRow, newCol)
+    },
+    onOrder: (newRow, newCol) => {
+      void orderQuickAction(newRow, newCol)
     },
   })
 
