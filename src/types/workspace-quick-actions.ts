@@ -6,6 +6,7 @@ export interface WorkspaceQuickAction {
 }
 
 export interface FacetQuickAction {
+  facetId: string
   facetType: FacetType
   facetPath: string
   name: string

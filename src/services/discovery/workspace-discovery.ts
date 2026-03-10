@@ -25,7 +25,6 @@ export async function workspaceDiscovery(rootPath: string): Promise<Workspace> {
 
     const makefileFacet = await parseMakefile(dir)
 
-    // packageFacet?.name || composeFacet?.name || makefileFacet?.name || ""
     const name = packageFacet?.name || basename(dir)
 
     if (packageFacet || composeFacet || makefileFacet) {

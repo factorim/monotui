@@ -1,2 +1,5 @@
-# Run linter on staged files only
+#!/usr/bin/env sh
+set -e
+
+# Run linter/formatter on staged files only
 pnpm lint-staged

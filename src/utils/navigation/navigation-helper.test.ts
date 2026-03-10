@@ -19,6 +19,7 @@ function quickActionCell(
     row,
     col,
     action: {
+      facetId: `apps/${name}:${name}`,
       facetType: "packageJson",
       facetPath: `apps/${name}`,
       name,

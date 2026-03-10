@@ -6,7 +6,9 @@ import type {
   ComposeCommandCell,
   ComposeServiceCell,
 } from "../../../../types/project-grid.js"
+import type { WorkspaceQuickAction } from "../../../../types/workspace-quick-actions.js"
 import type { RuntimeStatus } from "../../../../types/workspace-runtime.js"
+import { hasFacetQuickAction } from "../../../../utils/project/quick-actions.js"
 
 type ColComposeProps = {
   composeCommandCells: ComposeCommandCell[]
@@ -15,6 +17,7 @@ type ColComposeProps = {
   composeServicePorts?: Record<string, number>
   row: number
   col: number
+  workspaceQuickAction?: WorkspaceQuickAction
 }
 
 export function ColCompose({
@@ -24,6 +27,7 @@ export function ColCompose({
   composeServicePorts,
   row,
   col,
+  workspaceQuickAction,
 }: ColComposeProps) {
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
 
@@ -31,25 +35,42 @@ export function ColCompose({
     <Box flexDirection="column" width="32%">
       <Box flexDirection="column" width="100%">
         <Text {...styles.headerText()}>DOCKER COMPOSE</Text>
-        {/* <Text {...styles.info()} dimColor>
-          {composeCommandCells[0]?.filepath}
-        </Text> */}
       </Box>
 
-      {composeCommandCells.map((cell) => (
-        <Box key={cell.action.name} width="100%">
-          <Text
-            {...styles.action()}
-            inverse={row === cell.row && col === cell.col}
-          >
-            {cell.action.name}
-          </Text>
-        </Box>
-      ))}
+      {composeCommandCells.map((cell) => {
+        const facetQuickAction = hasFacetQuickAction(
+          workspaceQuickAction,
+          cell.filepath,
+          cell.action.name,
+        )
+
+        return (
+          <Box key={cell.action.name} width="100%" gap={1}>
+            <Text
+              {...styles.action()}
+              inverse={row === cell.row && col === cell.col}
+            >
+              {cell.action.name}
+            </Text>
+            {facetQuickAction && (
+              <Text {...styles.notification()}>
+                {facetQuickAction.order != null
+                  ? `[q${facetQuickAction.order}]`
+                  : "[q]"}
+              </Text>
+            )}
+          </Box>
+        )
+      })}
 
       <Box flexDirection="column" borderStyle="single" marginTop={1}>
         {composeServiceCells.map((cell, index) => {
           const isSelected = row === cell.row && col === cell.col
+          const _facetQuickAction = hasFacetQuickAction(
+            workspaceQuickAction,
+            cell.filepath,
+            cell.service.name,
+          )
           const serviceStatus = composeServiceStatuses?.[cell.service.name]
           const runtimePort = composeServicePorts?.[cell.service.name]
           const displayedPorts =

@@ -1,11 +1,12 @@
 import { useComponentTheme } from "@inkjs/ui"
 import { Box, Text } from "ink"
 import { useContext } from "react"
-
+import { getConfig } from "../../../config/config.js"
 import { ProjectGridContext } from "../../../contexts/ProjectGridContext.js"
 import { WorkspaceDiscoveryContext } from "../../../contexts/WorkspaceDiscoveryContext.js"
 import type { GridTheme } from "../../../theme/theme.js"
 import type { RuntimeStatus } from "../../../types/workspace-runtime.js"
+import { findWorkspaceQuickAction } from "../../../utils/project/quick-actions.js"
 import { Notification } from "../../ui/Notification.js"
 import { ColCompose } from "./components/ColCompose.js"
 import { ColMakefile } from "./components/ColMakefile.js"
@@ -13,6 +14,9 @@ import { ColPackageJson } from "./components/ColPackageJson.js"
 import { EmptyCol } from "./components/EmptyCol.js"
 
 export function ProjectGrid() {
+  const config = getConfig()
+  const configuredQuickActions = config.quickActions ?? []
+
   const { project, workspaceRuntimes } = useContext(WorkspaceDiscoveryContext)
   const { projectGrid, row, col } = useContext(ProjectGridContext)
   const { styles } = useComponentTheme<GridTheme>("GridTheme")
@@ -23,6 +27,11 @@ export function ProjectGrid() {
     composeCommandCells,
     composeServiceCells,
   } = projectGrid
+
+  const workspaceQuickAction = findWorkspaceQuickAction(
+    configuredQuickActions,
+    project?.path ?? "",
+  )
 
   const composeServiceStatuses: Record<string, RuntimeStatus> =
     workspaceRuntimes
@@ -64,7 +73,12 @@ export function ProjectGrid() {
         </Box>
 
         {makefileCells.length > 0 && (
-          <ColMakefile makefileCells={makefileCells} row={row} col={col} />
+          <ColMakefile
+            makefileCells={makefileCells}
+            row={row}
+            col={col}
+            workspaceQuickAction={workspaceQuickAction}
+          />
         )}
 
         {packageJsonCells.length > 0 && project && (
@@ -73,6 +87,7 @@ export function ProjectGrid() {
             packageJsonCells={packageJsonCells}
             row={row}
             col={col}
+            workspaceQuickAction={workspaceQuickAction}
           />
         )}
 
@@ -84,6 +99,7 @@ export function ProjectGrid() {
             composeServicePorts={composeServicePorts}
             row={row}
             col={col}
+            workspaceQuickAction={workspaceQuickAction}
           />
         )}
 
