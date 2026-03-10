@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process"
 
 import { logger } from "../../utils/logging/logger.js"
+import { assertDockerComposePreflight } from "./docker-compose-preflight.js"
 import { runShellCommand } from "./shell.js"
 
 function tmux(args: string[]): string {
@@ -12,6 +13,8 @@ export function runTmuxCommand(
   cwd: string,
   options?: { detached?: boolean },
 ): void {
+  assertDockerComposePreflight(command, cwd)
+
   if (!process.env.TMUX) {
     logger.warn("Not in a tmux session, falling back to shell runner")
     runShellCommand(command, cwd, options)

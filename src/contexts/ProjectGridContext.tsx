@@ -151,13 +151,11 @@ export function ProjectGridProvider({
   const orderQuickAction = async (newRow: number, newCol: number) => {
     const cell = getProjectCellByPosition(projectGrid, newRow, newCol)
     if (!cell) {
-      notifyError(`xxxx"}`)
       return
     }
 
     const facetQuickAction = toFacetQuickAction(cell)
     if (!facetQuickAction) {
-      notifyError(`Fxxxxr"}`)
       return
     }
 
@@ -199,9 +197,18 @@ export function ProjectGridProvider({
         if (command && exec) {
           notifyInfo(`Running ${command} on ${project?.name}`)
           const keepTuiOpen = shouldKeepTuiOpen(exec)
-          runCellCommand(command, project.path, config.execution?.runner, {
-            detached: keepTuiOpen,
-          })
+          try {
+            runCellCommand(command, project.path, config.execution?.runner, {
+              detached: keepTuiOpen,
+            })
+          } catch (error) {
+            notifyError(
+              `Failed to run command: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`,
+            )
+            return
+          }
 
           if (!keepTuiOpen && config.execution?.runner === "shell") {
             setPage(Page.Exit)

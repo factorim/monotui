@@ -7,7 +7,6 @@ import { PageNavigationContext } from "../../contexts/PageNavigationContext.js"
 import { WorkspaceDiscoveryContext } from "../../contexts/WorkspaceDiscoveryContext.js"
 import { WorkspacesNavigationProvider } from "../../contexts/WorkspaceGridContext.js"
 import { useWorkspaceQuickActions } from "../../hooks/useWorkspaceQuickActions.js"
-import { logger } from "../../utils/logging/logger.js"
 
 export function WorkspacePage() {
   const { setPage, workspacesGridPosition, setWorkspacesGridPosition } =
@@ -18,9 +17,6 @@ export function WorkspacePage() {
   const workspaceQuickActions = useWorkspaceQuickActions(
     workspace?.projects || [],
   )
-
-  logger.debug("----------------==================")
-  logger.debug(JSON.stringify(workspaceQuickActions, null, 2))
 
   return (
     <WorkspacesNavigationProvider

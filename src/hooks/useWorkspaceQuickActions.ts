@@ -131,7 +131,6 @@ export function useWorkspaceQuickActions(projects: Project[]) {
     quickActions.push(quickWorkspaceAction)
   }
 
-  logger.debug("111111=========================")
   logger.debug(quickActions, "Quick Actions")
   return quickActions
 }

@@ -29,18 +29,22 @@ pnpm exec monotui-init
 
 ## Usage
 
-You can run MonoTUI directly:
+MonoTUI supports two modes:
+
+### 1. Instant Run
+
+Run directly without creating a config file:
 
 ```sh
-pnpm monotui
+pnpm exec monotui
 ```
 
-Or add a script to your `package.json` for convenience:
+### 2. Config + Script Setup
 
-```json
-"scripts": {
-  "monotui": "monotui"
-}
+Initialize once to create `monotui.config.mjs` and update `package.json` with a `monotui` script:
+
+```sh
+pnpm exec monotui-init
 ```
 
 Then run:
