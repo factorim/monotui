@@ -1,71 +1,32 @@
 export default {
   discovery: {
     maxDepth: 4,
-    ignore: [
-      "node_modules",
-      ".git",
-      "dist",
-      "build",
-      "apps/ignored"
-    ],
+    ignore: ["node_modules", ".git", "dist", "build", "apps/ignored"],
     folders: {
-      app: [
-        "apps"
-      ],
-      package: [
-        "packages"
-      ],
-      infra: [
-        "infra"
-      ],
-      contract: [
-        "contracts"
-      ]
+      app: ["apps"],
+      package: ["packages"],
+      infra: ["infra"],
+      contract: ["contracts"],
     },
     scripts: {
-      exclude: []
+      exclude: [],
     },
     env: {
-      files: [
-        ".env.local",
-        ".env.development",
-        ".env",
-        ".env.example"
-      ],
-      portKeys: [
-        "PORT",
-        "APP_PORT",
-        "VITE_PORT",
-        "NEXT_PUBLIC_PORT"
-      ]
+      files: [".env.local", ".env.development", ".env", ".env.example"],
+      portKeys: ["PORT", "APP_PORT", "VITE_PORT", "NEXT_PUBLIC_PORT"],
     },
-    order: [
-      "workspace",
-      "app",
-      "contract",
-      "infra",
-      "package"
-    ],
+    order: ["workspace", "app", "contract", "infra", "package"],
     makefile: {
-      showDefault: false
-    }
+      showDefault: false,
+    },
   },
   execution: {
-    runner: "tmux"
+    runner: "tmux",
   },
   quickActions: [
     {
       workspacePath: "apps/api",
       facets: [
-        {
-          facetId: "apps/api/Makefile:dev",
-          facetType: "makefile",
-          facetPath: "apps/api/Makefile",
-          name: "dev",
-          command: "make dev",
-          exec: "pnpm run dev",
-          order: 1
-        },
         {
           facetId: "apps/api/docker-compose.yml:up",
           facetType: "compose",
@@ -73,9 +34,9 @@ export default {
           name: "up",
           command: "docker compose up",
           exec: "docker compose up",
-          order: 2
-        }
-      ]
+          order: 1,
+        },
+      ],
     },
     {
       workspacePath: "apps/admin",
@@ -87,7 +48,7 @@ export default {
           name: "dev",
           command: "pnpm run dev",
           exec: "vite",
-          order: 1
+          order: 1,
         },
         {
           facetId: "apps/admin/docker-compose.yml:up",
@@ -96,9 +57,9 @@ export default {
           name: "up",
           command: "docker compose up",
           exec: "docker compose up",
-          order: 2
-        }
-      ]
+          order: 2,
+        },
+      ],
     },
     {
       workspacePath: "infra/mongodb",
@@ -110,9 +71,9 @@ export default {
           name: "infra-up",
           command: "make infra-up",
           exec: "docker network inspect monorepo-network >/dev/null 2>&1 || docker network create monorepo-network && if [ ! -f .env ]; then cp .env.example .env; fi && docker compose up",
-          order: 1
-        }
-      ]
+          order: 1,
+        },
+      ],
     },
     {
       workspacePath: "apps/web",
@@ -124,7 +85,7 @@ export default {
           name: "dev",
           command: "pnpm run dev",
           exec: "vite",
-          order: 1
+          order: 1,
         },
         {
           facetId: "apps/web/docker-compose.yml:up",
@@ -133,9 +94,9 @@ export default {
           name: "up",
           command: "docker compose up",
           exec: "docker compose up",
-          order: 2
-        }
-      ]
+          order: 2,
+        },
+      ],
     },
     {
       workspacePath: "infra/redis",
@@ -147,17 +108,17 @@ export default {
           name: "up -d",
           command: "docker compose up -d",
           exec: "docker compose up -d",
-          order: 1
-        }
-      ]
-    }
+          order: 1,
+        },
+      ],
+    },
   ],
   logging: {
     level: "debug",
     file: true,
     logDir: "./logs",
     prettyPrint: true,
-    truncateOnStart: true
+    truncateOnStart: true,
   },
-  theme: "dark"
+  theme: "dark",
 }

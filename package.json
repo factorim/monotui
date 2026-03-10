@@ -88,9 +88,8 @@
   },
   "packageManager": "pnpm@10.28.0",
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json}": [
-      "biome check --write --no-errors-on-unmatched",
-      "bash -c 'pnpm biome check .'"
+    "*.{ts,tsx,js,jsx,mjs,cjs,json}": [
+      "biome check --write --no-errors-on-unmatched"
     ]
   }
 }
