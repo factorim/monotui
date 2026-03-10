@@ -1,10 +1,13 @@
 import { spawn } from "node:child_process"
+import { assertDockerComposePreflight } from "./docker-compose-preflight.js"
 
 export function runShellCommand(
   command: string,
   cwd: string,
   options?: { detached?: boolean },
 ): void {
+  assertDockerComposePreflight(command, cwd)
+
   const detached = options?.detached ?? false
 
   if (detached) {

@@ -45,19 +45,23 @@ export function ProjectCommands() {
     : undefined
 
   return (
-    <Box gap={1}>
-      <Text {...styles.action()}>&lt;enter&gt;</Text>
-      <Text {...styles.text()}>Execute</Text>
-      <Text {...styles.action()}>&lt;q&gt;</Text>
-      <Text {...styles.text()}>Quick Action</Text>
-      {selectedFacetQuickAction && (
-        <>
-          <Text {...styles.action()}>&lt;o&gt;</Text>
-          <Text {...styles.text()}>Order</Text>
-        </>
-      )}
-      <Text {...styles.action()}>&lt;esc&gt;</Text>
-      <Text {...styles.text()}>Quit</Text>
+    <Box flexDirection="column">
+      <Box gap={1}>
+        <Text {...styles.action()}>&lt;enter&gt;</Text>
+        <Text {...styles.text()}>Execute</Text>
+        <Text {...styles.action()}>&lt;esc&gt;</Text>
+        <Text {...styles.text()}>Quit</Text>
+      </Box>
+      <Box gap={1}>
+        <Text {...styles.action()}>&lt;q&gt;</Text>
+        <Text {...styles.text()}>Quick Action</Text>
+        {selectedFacetQuickAction && (
+          <>
+            <Text {...styles.action()}>&lt;o&gt;</Text>
+            <Text {...styles.text()}>Order</Text>
+          </>
+        )}
+      </Box>
     </Box>
   )
 }

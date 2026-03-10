@@ -64,7 +64,7 @@ export function WorkspacesNavigationProvider({
   onPositionChange,
 }: WorkspacesNavigationProviderProps) {
   const config = getConfig()
-  const { notifyInfo } = useContext(NotificationContext)
+  const { notifyInfo, notifyError } = useContext(NotificationContext)
 
   const workspacesNavigationGrid = useMemo(
     () =>
@@ -99,9 +99,18 @@ export function WorkspacesNavigationProvider({
           `Running ${selectedCell.action.command} on ${workspace.name}`,
         )
         const keepTuiOpen = shouldKeepTuiOpen(selectedCell.action.exec)
-        runCellCommand(command, workspace.path, config.execution?.runner, {
-          detached: keepTuiOpen,
-        })
+        try {
+          runCellCommand(command, workspace.path, config.execution?.runner, {
+            detached: keepTuiOpen,
+          })
+        } catch (error) {
+          notifyError(
+            `Failed to run command: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+          )
+          return
+        }
         if (!keepTuiOpen && config.execution?.runner === "shell") {
           setPage(Page.Exit)
         }
