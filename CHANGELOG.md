@@ -1,5 +1,11 @@
 # @factorim/monotui
 
+## 0.6.1
+
+### Patch Changes
+
+- Detect docker compose errors ([#30](https://github.com/factorim/monotui/pull/30))
+
 ## 0.6.0
 
 ### Minor Changes
